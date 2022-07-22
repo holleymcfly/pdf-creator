@@ -17,6 +17,8 @@ import java.util.Date;
 public class PdfCreatorTest {
 
     @Test
+    // Don't run the test automatically as it creates a document in the local file system.
+    // This is only for manual testing purposes.
     @Disabled
     public void createSimpleTextDocument() {
 
