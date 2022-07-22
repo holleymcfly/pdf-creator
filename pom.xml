@@ -29,8 +29,8 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/holleymcfly/pdf-creator.git</connection>
-        <developerConnection>scm:git:ssh://github.com/holleymcfly/pdf-creator.git</developerConnection>
+        <connection>scm:git:https://git@github.com/holleymcfly/pdf-creator.git</connection>
+        <developerConnection>scm:git:https://git@github.com/holleymcfly/pdf-creator.git</developerConnection>
         <url>http://github.com/holleymcfly/pdf-creator/tree/master</url>
     </scm>
 
