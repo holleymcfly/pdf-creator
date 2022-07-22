@@ -71,7 +71,10 @@ public class PdfCreator {
     }
 
     /**
-     * <b>Draws a line from the point <code>from</code> to the point <code>to</code>.</b>
+     * <b>Draws a line from the point <code>from</code> to the point <code>to</code>.</b><br>
+     * <br>
+     * @param from  The starting point for the line.
+     * @param to    The end point of the line.
      */
     public void line(PdfPoint from, PdfPoint to) {
 
@@ -88,9 +91,14 @@ public class PdfCreator {
     }
 
     /**
-     * <b>Creates the given table.</b>
+     * <b>Creates the given table.</b><br>
+     * <br>
+     * The given table has to be fully configured, i.e. it already includes all columns and content.
+     * Changing the table later is not possible.<br>
+     * <br>
+     * @param table     The fully configured table to print
      */
-    public int addTable(PdfTable table) {
+    public void addTable(PdfTable table) {
 
         currentY -= table.getFont().getSize();
 
@@ -117,8 +125,6 @@ public class PdfCreator {
 
             currentY -= rowHeight;
         }
-
-        return currentY;
     }
 
     private boolean fitsOnPage(int height) {
@@ -168,7 +174,8 @@ public class PdfCreator {
      * The text always starts on a new line. It The text will be wrapped automatically.
      * If the text doesn't fit on the page, a new page will be created.<br>
      * <br>
-     * Returns the new y position for the page.
+     * @param text  The text to add
+     * @param font  The font to use for printing the text
      */
     public void addTextLeftAligned(String text, PdfFont font) {
         addText(text, font, DEFAULT_MARGIN_LEFT, false, false);
@@ -184,7 +191,8 @@ public class PdfCreator {
      * The text always starts on a new line. It The text will be wrapped automatically.
      * If the text doesn't fit on the page, a new page will be created.<br>
      * <br>
-     * Returns the new y position for the page.
+     * @param text  The text to add
+     * @param font  The font to use for printing the text
      */
     public void addTextCentered(String text, PdfFont font) {
         addText(text, font, -1, true, false);
@@ -249,7 +257,9 @@ public class PdfCreator {
     }
 
     /**
-     * <b>Saves the current document to the given output path.</b>
+     * <b>Saves the current document to the given output path.</b><br>
+     * <br>
+     * @param path  The path to the local file system (including the file name) where the document shall be saved.
      */
     public void save(String path) {
         try {

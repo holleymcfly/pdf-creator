@@ -42,6 +42,19 @@
         <version.plugin.gpg>3.0.1</version.plugin.gpg>
     </properties>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>sonatype-nexus-staging</id>
+            <name>Nexus Release Repository</name>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+    </distributionManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
@@ -63,6 +76,16 @@
 
     <build>
         <plugins>
+            <!-- specify the encoding -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <encoding>ISO-8859-1</encoding>
+                </configuration>
+            </plugin>
+
             <!-- Attach source jars-->
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
@@ -91,6 +114,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <encoding>ISO-8859-1</encoding>
+                </configuration>
             </plugin>
 
             <!-- Attach checksums -->
@@ -123,22 +149,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Sign artifacts for uploading to maven central -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>${version.plugin.gpg}</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
             <!-- Building maven releases -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -147,5 +157,39 @@
             </plugin>
         </plugins>
     </build>
+
+    <!-- Use this profile when a new version shall be deployed in maven central repository -->
+    <!-- mvn deploy -P release-sign-artifacts -->
+    <!-- NOTE: you will have to execute this on the command line, not in the IDE. -->
+    <profiles>
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <!-- Sign artifacts for uploading to maven central -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>${version.plugin.gpg}</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

@@ -64,7 +64,10 @@ public class PdfTable {
     }
 
     /**
-     * <b>Returns all cells for a single table row, ordered by the column index.</b>
+     * <b>Returns all cells for a single table row, ordered by the column index.</b><br>
+     * <br>
+     * @param row   The number of the row for which the cells shall be returned (starting at 1).
+     * @return      The linked list of all cells in the requested row.
      */
     public LinkedList<PdfTableCell> getCellsForRowOrdered(int row) {
 
