@@ -8,9 +8,38 @@
     <artifactId>pdf-creator</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>High-level API for creating PDF documents, using apache pdfbox.</description>
+    <url>https://github.com/holleymcfly/pdf-creator</url>
+
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Holger Herrmann</name>
+            <email>holger.herrmann@asamnet.de</email>
+            <organization>private</organization>
+            <organizationUrl>https://github.com/holleymcfly</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/holleymcfly/pdf-creator.git</connection>
+        <developerConnection>scm:git:ssh://github.com:holleymcfly/pdf-creator.git</developerConnection>
+        <url>http://github.com/holleymcfly/pdf-creator/tree/master</url>
+    </scm>
+
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <version.plugin.source>3.2.1</version.plugin.source>
+        <version.plugin.javadoc>3.2.0</version.plugin.javadoc>
+        <version.plugin.gpg>3.0.1</version.plugin.gpg>
     </properties>
 
     <dependencies>
@@ -31,5 +60,92 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <!-- Attach source jars-->
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${version.plugin.source}</version>
+                <executions>
+                    <execution>
+                        <id>attach-source</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Attach javadocs jar -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${version.plugin.javadoc}</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Attach checksums -->
+            <plugin>
+                <groupId>net.nicoulaj.maven.plugins</groupId>
+                <artifactId>checksum-maven-plugin</artifactId>
+                <version>1.10</version>
+                <executions>
+                    <execution>
+                        <id>checksum-maven-plugin-files</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>files</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <fileSets>
+                        <fileSet>
+                            <directory>${project.build.directory}</directory>
+                            <includes>
+                                <include>*.jar</include>
+                            </includes>
+                        </fileSet>
+                    </fileSets>
+                    <algorithms>
+                        <algorithm>SHA-1</algorithm>
+                        <algorithm>MD5</algorithm>
+                    </algorithms>
+                </configuration>
+            </plugin>
+
+            <!-- Sign artifacts for uploading to maven central -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>${version.plugin.gpg}</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Building maven releases -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>3.0.0-M6</version>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
