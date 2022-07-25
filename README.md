@@ -1,7 +1,9 @@
 # pdf-creator
 ## High-level API for creating PDF documents, using apache pdfbox.
 
-The goal of this project is to provide an API that is easy to use for creating pdf documents.
+The goal of this project is to provide an open source API that is easy to use for creating pdf documents.
+It uses the pdfbox project from apache, which offers good functionality, but isn't very easy to use.
+
 
 ## [Handling Fonts](https://github.com/holleymcfly/pdf-creator/wiki/Handling-fonts)
 The pdf-creator needs the font that shall be used in the document. The font is of type `PdfFont` that contains the font type and its size.
@@ -19,26 +21,13 @@ PdfCreator pdfCreator = new PdfCreatorBuilder().build();
 When creating a pdf-creator, some more information can be directly passed to it. See the chapter in the wiki page for details.
 
 
-## Adding text
-### Adding left aligned text
-Adding text to the document is as easy as:
+## Adding content
+When the pdf-creator has been created, it will start adding content at the top of the page, with a default margin. If the document has a header, the margin starts from that header line.
+
+### [Adding text](https://github.com/holleymcfly/pdf-creator/wiki/Adding-text)
+Simple text can be added to the document like this:
 ```
 pdfCreator.addTextLeftAligned("Some text", font);
 ```
 
-If the text doesn't fit in one line, it is wrapped to several lines, including creating new pages automatically.
-
-### Adding centered text
-Text can also be added centered:
-```
-pdfCreator.addTextCentered("Awesome pdf-creator", font);
-```
-
-## Adding a new, empty line
-To add an empty line, write:
-```
-pdfCreator.addNewLine(font);
-```
-
-As the height of the new line depends on the font size, the font has to be passed for adding a new line, too.
-
+There are more options for adding text and new lines. Visit the chapter in the wiki page for details.
