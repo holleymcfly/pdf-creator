@@ -39,3 +39,8 @@ pdf-creator can handle tables very easily. To add a table, you have to create a 
 ```
 pdfCreator.addTable(table);
 ```
+
+### Example
+This is an example of a pdf created with pdf-creator:
+
+![example_table01.jpg](https://github.com/holleymcfly/pdf-creator/blob/master/documentation_images/example_pdf01.jpg)
