@@ -3,7 +3,7 @@
 
 The goal of this project is to provide an API that is easy to use for creating pdf documents.
 
-## Defining fonts
+## [Handling Fonts](https://github.com/holleymcfly/pdf-creator/wiki/Handling-fonts)
 The pdf-creator needs the font that shall be used in the document. The font is of type `PdfFont` that contains the font type and its size.
 A PdfFont can be created like this:
 ```
