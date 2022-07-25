@@ -33,3 +33,9 @@ pdfCreator.addTextLeftAligned("Some text", font);
 ```
 
 There are more options for adding text and new lines. Visit the chapter in the wiki page for details.
+
+## Adding tables
+pdf-creator can handle tables very easily. To add a table, you have to create a `PdfTable` object and add it to the document:
+```
+pdfCreator.addTable(table);
+```
