@@ -140,6 +140,10 @@ public class PdfCreator {
             addText(cell.getSplitUpLines(), cell.getFont(), cellX, false, false, cellY);
             cellX += cell.getContentWidth() + cell.getMarginRight();
         }
+
+        // When setting the text to table cells, we don't modify the currentY value.
+        // That's already handled in the calling method.
+        currentY = cellY;
     }
 
     private void drawTableRowLines(int rowX, List<PdfTableCell> cells, int rowHeight, int rowWidth) {

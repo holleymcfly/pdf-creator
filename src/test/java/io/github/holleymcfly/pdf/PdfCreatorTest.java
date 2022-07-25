@@ -35,18 +35,18 @@ public class PdfCreatorTest {
                 .build();
 
         // Header
-        pdfCreator.addTextCentered("Awesome targenio pdf creator", headlineFont);
-        pdfCreator.addNewLine(contentFont);
-        pdfCreator.addNewLine(contentFont);
+//        pdfCreator.addTextCentered("Awesome targenio pdf creator", headlineFont);
+//        pdfCreator.addNewLine(contentFont);
+//        pdfCreator.addNewLine(contentFont);
 
         // Content
-        pdfCreator.addTextLeftAligned(LINE1, contentFont);
-        pdfCreator.addNewLine(contentFont);
-        pdfCreator.addTextCentered(LINE3, contentFont);
-        pdfCreator.addNewLine(contentFont);
-        pdfCreator.addTextLeftAligned(LINE4, contentFont);
-        pdfCreator.addNewLine(contentFont);
-        pdfCreator.addTextLeftAligned(LINE5, contentFont);
+//        pdfCreator.addTextLeftAligned(LINE1, contentFont);
+//        pdfCreator.addNewLine(contentFont);
+//        pdfCreator.addTextCentered(LINE3, contentFont);
+//        pdfCreator.addNewLine(contentFont);
+//        pdfCreator.addTextLeftAligned(LINE4, contentFont);
+//        pdfCreator.addNewLine(contentFont);
+//        pdfCreator.addTextLeftAligned(LINE5, contentFont);
 
         // Some table
         PdfTable table = createTable(contentFont);
@@ -63,22 +63,21 @@ public class PdfCreatorTest {
 
     private PdfTable createTable(PdfFont contentFont) {
 
-        PdfTable table = new PdfTable(contentFont, 400, 4);
+        PdfFont font = new PdfFont(new PDType1Font(Standard14Fonts.FontName.TIMES_ROMAN), 12);
+        PdfFont anotherFont = new PdfFont(new PDType1Font(Standard14Fonts.FontName.COURIER_BOLD), 10);
+
+        PdfTable table = new PdfTable(font, 300, 3);
         PdfTableCell cell = new PdfTableCell(new PdfTableCellPosition(1, 1), "Cell 1/1");
         table.addCell(cell);
-        cell = new PdfTableCell(new PdfTableCellPosition(1, 2), "WWWWWWWW");
+        cell = new PdfTableCell(new PdfTableCellPosition(1, 2), "Cell 1/2");
         table.addCell(cell);
         cell = new PdfTableCell(new PdfTableCellPosition(2, 3), "Cell 2/3");
         table.addCell(cell);
-        cell = new PdfTableCell(new PdfTableCellPosition(1, 4), "Cell 1/4");
-        table.addCell(cell);
-        cell = new PdfTableCell(new PdfTableCellPosition(2, 1), "Cell 2/1");
-        table.addCell(cell);
-        cell = new PdfTableCell(new PdfTableCellPosition(2, 2), "Cell 2/2 with a little bit more text that doesn't fit in the cell.");
-        table.addCell(cell);
         cell = new PdfTableCell(new PdfTableCellPosition(1, 3), "Cell 1/3");
         table.addCell(cell);
-        cell = new PdfTableCell(new PdfTableCellPosition(2, 4), "Cell 2/4");
+        cell = new PdfTableCell(new PdfTableCellPosition(2, 1), "Cell 2/1", anotherFont);
+        table.addCell(cell);
+        cell = new PdfTableCell(new PdfTableCellPosition(2, 2), "Cell 2/2 with a little bit more text that doesn't fit in the cell.");
         table.addCell(cell);
         return table;
     }
