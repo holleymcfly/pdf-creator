@@ -4,6 +4,8 @@
 The goal of this project is to provide an open source API that is easy to use for creating pdf documents.
 It uses the pdfbox project from apache, which offers good functionality, but isn't very easy to use.
 
+For a detailed manual, see this [wiki page](https://github.com/holleymcfly/pdf-creator/wiki/Usage).
+
 
 ## [Handling Fonts](https://github.com/holleymcfly/pdf-creator/wiki/Handling-fonts)
 The pdf-creator needs the font that shall be used in the document. The font is of type `PdfFont` that contains the font type and its size.
