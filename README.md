@@ -10,26 +10,14 @@ A PdfFont can be created like this:
 PdfFont font = new PdfFont(new PDType1Font(Standard14Fonts.FontName.TIMES_ROMAN), 12);
 ```
 
-## Creating a new pdf-creator
-### Creating a simple document
-To create a pdf-creator, the PdfCreatorBuilder has to be used like this:
+## [Creating a new pdf-creator](https://github.com/holleymcfly/pdf-creator/wiki/Creating-new-pdf-creators)
+Creating a new, simple pdf-creator is very easy by using its builder class:
 ```
 PdfCreator pdfCreator = new PdfCreatorBuilder().build();
 ```
 
-### Creating a document with header
-The pdf-creator can add a standard header, which consists of some left-aligned text, followed by a line.
-If the header is set when the page is created, it will be added to each page of the document.
-```
-PdfCreator pdfCreator = new PdfCreatorBuilder().withHeader("The header text", headerFont).build();
-```
+When creating a pdf-creator, some more information can be directly passed to it. See the chapter in the wiki page for details.
 
-### Creating a document with footer
-The pdf-creator can also add a footer that consists of a line and some text, for example:
-```
-String date = new SimpleDateFormat("EEEEE dd. MMMMM yyyy, HH:mm:ss").format(new Date());
-PdfCreator pdfCreator = new PdfCreatorBuilder().withFooter(date, footerFont).build();
-```
 
 ## Adding text
 ### Adding left aligned text
