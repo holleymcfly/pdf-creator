@@ -6,6 +6,18 @@ It uses the pdfbox project from apache, which offers good functionality, but isn
 
 For a detailed manual, see this [wiki page](https://github.com/holleymcfly/pdf-creator/wiki/Usage).
 
+## Getting started
+Include the library with maven:
+```
+<!-- https://mvnrepository.com/artifact/io.github.holleymcfly/pdf-creator -->
+<dependency>
+    <groupId>io.github.holleymcfly</groupId>
+    <artifactId>pdf-creator</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+Please check the latest version [here](https://mvnrepository.com/artifact/io.github.holleymcfly/pdf-creator).
+
 
 ## [Handling Fonts](https://github.com/holleymcfly/pdf-creator/wiki/Handling-fonts)
 The pdf-creator needs the font that shall be used in the document. The font is of type `PdfFont` that contains the font type and its size.
