@@ -7,7 +7,7 @@ It uses the pdfbox project from apache, which offers good functionality, but isn
 For a detailed manual, see this [wiki page](https://github.com/holleymcfly/pdf-creator/wiki/Usage).
 
 ## Getting started
-Include the library with maven:
+### Include the library with maven:
 ```
 <!-- https://mvnrepository.com/artifact/io.github.holleymcfly/pdf-creator -->
 <dependency>
@@ -17,6 +17,23 @@ Include the library with maven:
 </dependency>
 ```
 Please check the latest version [here](https://mvnrepository.com/artifact/io.github.holleymcfly/pdf-creator).
+
+### Create a new instance
+```
+PdfCreator pdfCreator = new PdfCreatorBuilder().build();
+```
+
+### Add some text
+```
+pdfCreator.addTextLeftAligned("Some text", new PdfFont(new PDType1Font(Standard14Fonts.FontName.TIMES_ROMAN), 12));
+```
+
+### Save your document
+```
+pdfCreator.save("C:/createdDocument.pdf");
+```
+
+That's it!!!
 
 
 ## [Handling Fonts](https://github.com/holleymcfly/pdf-creator/wiki/Handling-fonts)
