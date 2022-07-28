@@ -120,7 +120,7 @@ public class PdfCreator {
                 newPage();
             }
 
-            drawTableRowLines(rowX, cells, rowHeight, rowWidth);
+            drawTableRowLines(rowX, table, cells, rowHeight, rowWidth);
             fillTableCellTexts(rowX, cells);
 
             currentY -= rowHeight;
@@ -146,7 +146,7 @@ public class PdfCreator {
         currentY = cellY;
     }
 
-    private void drawTableRowLines(int rowX, List<PdfTableCell> cells, int rowHeight, int rowWidth) {
+    private void drawTableRowLines(int rowX, PdfTable table, List<PdfTableCell> cells, int rowHeight, int rowWidth) {
 
         // top line
         line(new PdfPoint(rowX, currentY), new PdfPoint(rowWidth, currentY));
@@ -158,8 +158,8 @@ public class PdfCreator {
         line(new PdfPoint(rowX, currentY - rowHeight), new PdfPoint(rowWidth, currentY - rowHeight));
         // lines between the cells
         int cellX = rowX;
-        for (int j = 0; j< cells.size()-1; j++) {
-            cellX += cells.get(j+1).getWidth();
+        for (int j=0; j<table.getColumnWidths().size(); j++) {
+        	cellX += table.getColumnWidths().get(j);
             line(new PdfPoint(cellX, currentY), new PdfPoint(cellX, currentY - rowHeight));
         }
     }

@@ -11,6 +11,7 @@ public class PdfTable {
     private PdfFont font;
     private int tableWidth;
     private int numberOfColumns;
+    private LinkedList<Integer> columnWidths = new LinkedList<>();
 
     // Calculated when the table is initialized.
     private int numberOfRows;
@@ -19,8 +20,35 @@ public class PdfTable {
         this.font = font;
         this.tableWidth = tableWidth;
         this.numberOfColumns = numberOfColumns;
+
+        initColumnWidths();
     }
 
+    public PdfTable(PdfFont font, LinkedList<Integer> columnWidths) {
+    	this.font = font;
+    	this.numberOfColumns = columnWidths.size();
+    	this.columnWidths.addAll(columnWidths);
+    	this.tableWidth = calculateCompleteWidth();
+    }
+    
+    private Integer calculateCompleteWidth() {
+    	
+    	int w = 0;
+    	for (Integer columnWidth : columnWidths) {
+    		w += columnWidth;
+    	}
+    	
+    	return w;
+    }
+    
+    private void initColumnWidths() {
+    	
+        for (int i=0; i<numberOfColumns; i++) {
+        	int columnWidth = tableWidth / numberOfColumns;
+        	columnWidths.add(columnWidth);
+        }	
+    }
+    
     public void addCell(PdfTableCell cell) {
         cells.add(cell);
     }
@@ -36,7 +64,7 @@ public class PdfTable {
      */
     public void init() {
         for (PdfTableCell cell : cells) {
-            cell.init(tableWidth, numberOfColumns, font);
+            cell.init(tableWidth, numberOfColumns, font, columnWidths);
         }
 
         calculateNumberOfRows();
@@ -105,4 +133,8 @@ public class PdfTable {
     public int getTableWidth() {
         return tableWidth;
     }
+
+	public LinkedList<Integer> getColumnWidths() {
+		return columnWidths;
+	}
 }

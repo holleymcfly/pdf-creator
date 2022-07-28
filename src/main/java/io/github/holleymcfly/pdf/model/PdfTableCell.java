@@ -59,19 +59,20 @@ public class PdfTableCell {
         this.font = font;
     }
 
-    public void init(int tableWidth, int numberOfColumns, PdfFont font) {
+    public void init(int tableWidth, int numberOfColumns, PdfFont font, LinkedList<Integer> columnWidths) {
 
         if (this.font == null) {
             this.font = font;
         }
 
-        calculateCellWidth(tableWidth, numberOfColumns);
+        calculateCellWidth(tableWidth, numberOfColumns, columnWidths);
         splitUpText();
         calculateCellHeight();
     }
 
-    private void calculateCellWidth(int tableWidth, int numberOfColumns) {
-        width = tableWidth / numberOfColumns;
+    private void calculateCellWidth(int tableWidth, int numberOfColumns, LinkedList<Integer> columnWidths) {
+        
+    	width = columnWidths.get(position.getColumn()-1);
         contentWidth = width - MARGIN_LEFT - MARGIN_RIGHT;
     }
 
@@ -201,16 +202,8 @@ public class PdfTableCell {
             return remainingWords;
         }
 
-        public void setRemainingWords(String[] remainingWords) {
-            this.remainingWords = remainingWords;
-        }
-
         public String getLine() {
             return line;
-        }
-
-        public void setLine(String line) {
-            this.line = line;
         }
     }
 }

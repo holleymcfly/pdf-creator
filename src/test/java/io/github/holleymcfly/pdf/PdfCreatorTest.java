@@ -13,13 +13,14 @@ import org.junit.jupiter.api.Test;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
 
 public class PdfCreatorTest {
 
     @Test
     // Don't run the test automatically as it creates a document in the local file system.
     // This is only for manual testing purposes.
-    @Disabled
+    // @Disabled
     public void createSimpleTextDocument() {
 
         PdfFont headerFont = new PdfFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_OBLIQUE), 8);
@@ -62,7 +63,13 @@ public class PdfCreatorTest {
 
     private PdfTable createTable(PdfFont contentFont) {
 
-        PdfTable table = new PdfTable(contentFont, 400, 4);
+    	LinkedList<Integer> columWidths = new LinkedList<>();
+    	columWidths.add(80);
+    	columWidths.add(150);
+    	columWidths.add(70);
+    	columWidths.add(100);
+    	
+        PdfTable table = new PdfTable(contentFont, columWidths);
         PdfTableCell cell = new PdfTableCell(new PdfTableCellPosition(1, 1), "Dog Leash");
         table.addCell(cell);
         cell = new PdfTableCell(new PdfTableCellPosition(1, 2), "Organic Bike");
