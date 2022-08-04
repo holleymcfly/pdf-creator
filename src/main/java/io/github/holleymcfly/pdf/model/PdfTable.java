@@ -120,7 +120,39 @@ public class PdfTable {
         return tableWidth;
     }
 
-	public LinkedList<Integer> getColumnWidths() {
-		return columnWidths;
-	}
+    /**
+     * <b>Returns the x position of the table cell with the given coordinates.</b><br>
+     * <br>
+     * If there is no cell at that position, -1 is returned.<br>
+     *
+     * @param row    The row of the cell the position shall be returned.
+     * @param column The column of the cell the position shall be returned.
+     * @return  The x value of the cell, including the offset. -1 if there is no cell at that position.
+     */
+    public int getXofTableCell(int row, int column, int offset) {
+
+        LinkedList<PdfTableCell> cellsOfRow = getCellsForRowOrdered(row);
+        int x = 0;
+        for (PdfTableCell cell : cellsOfRow) {
+            if (cell.getPosition().getRow() == row && cell.getPosition().getColumn() == column) {
+                return x + offset;
+            }
+
+            x += cell.getWidth();
+        }
+
+        return -1;
+    }
+
+    /**
+     * <b>Returns the x position of the table cell with the given coordinates.</b><br>
+     * <br>
+     * Same as <code>getXofTableCell(int row, int column, int offset)</code>, with a cell as input.<br>
+     *
+     * @param cell    The cell the position is taken from.
+     * @return  The x value of the cell, including the offset. -1 if there is no cell at that position.
+     */
+    public int getXofTableCell(PdfTableCell cell, int offset) {
+        return getXofTableCell(cell.getPosition().getRow(), cell.getPosition().getColumn(), offset);
+    }
 }

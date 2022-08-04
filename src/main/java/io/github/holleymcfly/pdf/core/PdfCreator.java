@@ -104,7 +104,7 @@ public class PdfCreator {
 
         table.init();
 
-        int rowX = DEFAULT_MARGIN_LEFT;
+        int tableStartX = DEFAULT_MARGIN_LEFT;
 
         for (int i=0; i<table.getNumberOfRows(); i++) {
 
@@ -114,14 +114,14 @@ public class PdfCreator {
             }
 
             int rowHeight = table.getRowHeight(i+1);
-            int rowWidth = rowX + table.getTableWidth();
+            int rowWidth = tableStartX + table.getTableWidth();
 
             if (!fitsTableOnPage(rowHeight)) {
                 newPage();
             }
 
-            drawTableRowLines(rowX, table, cells, rowHeight, rowWidth);
-            fillTableCellTexts(rowX, cells);
+            drawTableRowLines(tableStartX, table, cells, rowHeight, rowWidth);
+            fillTableCellTexts(table, cells);
 
             currentY -= rowHeight;
         }
@@ -131,14 +131,12 @@ public class PdfCreator {
         return (currentY - height) > pageBottom;
     }
 
-    private void fillTableCellTexts(int rowX, List<PdfTableCell> cells) {
+    private void fillTableCellTexts(PdfTable table, List<PdfTableCell> cells) {
 
-        int cellX = rowX;
         int cellY = currentY;
         for (PdfTableCell cell : cells) {
-            cellX += cell.getMarginLeft();
-            addText(cell.getSplitUpLines(), cell.getFont(), cellX, false, false, cellY);
-            cellX += cell.getContentWidth() + cell.getMarginRight();
+            int x = table.getXofTableCell(cell, cell.getMarginLeft()) + DEFAULT_MARGIN_LEFT;
+            addText(cell.getSplitUpLines(), cell.getFont(), x, false, false, cellY);
         }
 
         // When setting the text to table cells, we don't modify the currentY value.
@@ -146,40 +144,37 @@ public class PdfCreator {
         currentY = cellY;
     }
 
-    private void drawTableRowLines(int rowX, PdfTable table, List<PdfTableCell> cells, int rowHeight, int rowWidth) {
+    private void drawTableRowLines(int tableStartX, PdfTable table, List<PdfTableCell> cells, int rowHeight, int rowWidth) {
 
-        drawTopHorizontalTableLine(rowX, rowWidth);
-        drawLeftVerticalTableLine(rowX, rowHeight);
+        drawTopHorizontalTableLine(tableStartX, rowWidth);
+        drawLeftVerticalTableLine(tableStartX, rowHeight);
         drawRightVerticalTableLine(rowHeight, rowWidth);
-        drawBottomHorizontalTableLine(rowX, rowHeight, rowWidth);
-        drawVerticalRowLines(rowX, table, cells, rowHeight);
+        drawBottomHorizontalTableLine(tableStartX, rowHeight, rowWidth);
+        drawVerticalRowLines(tableStartX, table, cells, rowHeight);
     }
 
-    private void drawVerticalRowLines(int rowX, PdfTable table, List<PdfTableCell> cells, int rowHeight) {
-        int cellX = rowX;
-        for (PdfTableCell cell : cells) {
+    private void drawVerticalRowLines(int tableStartX, PdfTable table, List<PdfTableCell> cells, int rowHeight) {
 
-            for (int c=0; c<cell.getPosition().getColspan(); c++) {
-                cellX += table.getColumnWidths().get(cell.getPosition().getColumn()-1+c);
-            }
-            line(new PdfPoint(cellX, currentY), new PdfPoint(cellX, currentY - rowHeight));
+        for (PdfTableCell cell : cells) {
+            int x = table.getXofTableCell(cell, tableStartX);
+            line(new PdfPoint(x, currentY), new PdfPoint(x, currentY - rowHeight));
         }
     }
 
-    private void drawBottomHorizontalTableLine(int rowX, int rowHeight, int rowWidth) {
-        line(new PdfPoint(rowX, currentY - rowHeight), new PdfPoint(rowWidth, currentY - rowHeight));
+    private void drawBottomHorizontalTableLine(int tableStartX, int rowHeight, int rowWidth) {
+        line(new PdfPoint(tableStartX, currentY - rowHeight), new PdfPoint(rowWidth, currentY - rowHeight));
     }
 
     private void drawRightVerticalTableLine(int rowHeight, int rowWidth) {
         line(new PdfPoint(rowWidth, currentY), new PdfPoint(rowWidth, currentY - rowHeight));
     }
 
-    private void drawLeftVerticalTableLine(int rowX, int rowHeight) {
-        line(new PdfPoint(rowX, currentY), new PdfPoint(rowX, currentY - rowHeight));
+    private void drawLeftVerticalTableLine(int tableStartX, int rowHeight) {
+        line(new PdfPoint(tableStartX, currentY), new PdfPoint(tableStartX, currentY - rowHeight));
     }
 
-    private void drawTopHorizontalTableLine(int rowX, int rowWidth) {
-        line(new PdfPoint(rowX, currentY), new PdfPoint(rowWidth, currentY));
+    private void drawTopHorizontalTableLine(int tableStartX, int rowWidth) {
+        line(new PdfPoint(tableStartX, currentY), new PdfPoint(rowWidth, currentY));
     }
 
     public void setPageTop(int pageTop) {
