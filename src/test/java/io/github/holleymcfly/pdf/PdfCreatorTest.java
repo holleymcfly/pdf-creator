@@ -8,7 +8,6 @@ import io.github.holleymcfly.pdf.model.PdfTableCell;
 import io.github.holleymcfly.pdf.model.PdfTableCellPosition;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.text.SimpleDateFormat;
@@ -74,13 +73,11 @@ public class PdfCreatorTest {
         table.addCell(cell);
         cell = new PdfTableCell(new PdfTableCellPosition(1, 2), "Organic Bike");
         table.addCell(cell);
-        cell = new PdfTableCell(new PdfTableCellPosition(2, 3), "Red Wine");
-        table.addCell(cell);
         cell = new PdfTableCell(new PdfTableCellPosition(1, 4), "Tires for All");
         table.addCell(cell);
         cell = new PdfTableCell(new PdfTableCellPosition(2, 1), "Computer That Rock");
         table.addCell(cell);
-        cell = new PdfTableCell(new PdfTableCellPosition(2, 2), "I Can't Believe It's Not Internet of Things!");
+        cell = new PdfTableCell(new PdfTableCellPosition(2, 2, 2), "I Can't Believe It's Not Internet of Things!");
         table.addCell(cell);
         cell = new PdfTableCell(new PdfTableCellPosition(1, 3), "Yesterday Smack");
         table.addCell(cell);

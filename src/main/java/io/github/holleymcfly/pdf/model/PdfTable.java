@@ -1,17 +1,14 @@
 package io.github.holleymcfly.pdf.model;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.*;
 
 public class PdfTable {
 
-    private Set<PdfTableCell> cells = new HashSet<>();
-    private PdfFont font;
-    private int tableWidth;
-    private int numberOfColumns;
-    private LinkedList<Integer> columnWidths = new LinkedList<>();
+    private final Set<PdfTableCell> cells = new HashSet<>();
+    private final PdfFont font;
+    private final int tableWidth;
+    private final int numberOfColumns;
+    private final LinkedList<Integer> columnWidths = new LinkedList<>();
 
     // Calculated when the table is initialized.
     private int numberOfRows;
@@ -64,7 +61,7 @@ public class PdfTable {
      */
     public void init() {
         for (PdfTableCell cell : cells) {
-            cell.init(tableWidth, numberOfColumns, font, columnWidths);
+            cell.init(font, columnWidths);
         }
 
         calculateNumberOfRows();
@@ -107,18 +104,7 @@ public class PdfTable {
             }
         }
 
-        Collections.sort(cellsForRow, (o1, o2) -> {
-            if (o1.getPosition().getColumn() > o2.getPosition().getColumn()) {
-                return 1;
-            }
-            else if (o1.getPosition().getColumn() == o2.getPosition().getColumn()) {
-                return 0;
-            }
-            else {
-                return -1;
-            }
-        });
-
+        cellsForRow.sort(Comparator.comparingInt(o -> o.getPosition().getColumn()));
         return cellsForRow;
     }
 

@@ -116,7 +116,7 @@ public class PdfCreator {
             int rowHeight = table.getRowHeight(i+1);
             int rowWidth = rowX + table.getTableWidth();
 
-            if (!fitsOnPage(rowHeight)) {
+            if (!fitsTableOnPage(rowHeight)) {
                 newPage();
             }
 
@@ -127,7 +127,7 @@ public class PdfCreator {
         }
     }
 
-    private boolean fitsOnPage(int height) {
+    private boolean fitsTableOnPage(int height) {
         return (currentY - height) > pageBottom;
     }
 
@@ -148,20 +148,38 @@ public class PdfCreator {
 
     private void drawTableRowLines(int rowX, PdfTable table, List<PdfTableCell> cells, int rowHeight, int rowWidth) {
 
-        // top line
-        line(new PdfPoint(rowX, currentY), new PdfPoint(rowWidth, currentY));
-        // left vertical line
-        line(new PdfPoint(rowX, currentY), new PdfPoint(rowX, currentY - rowHeight));
-        // right vertical line
-        line(new PdfPoint(rowWidth, currentY), new PdfPoint(rowWidth, currentY - rowHeight));
-        // bottom line
-        line(new PdfPoint(rowX, currentY - rowHeight), new PdfPoint(rowWidth, currentY - rowHeight));
-        // lines between the cells
+        drawTopHorizontalTableLine(rowX, rowWidth);
+        drawLeftVerticalTableLine(rowX, rowHeight);
+        drawRightVerticalTableLine(rowHeight, rowWidth);
+        drawBottomHorizontalTableLine(rowX, rowHeight, rowWidth);
+        drawVerticalRowLines(rowX, table, cells, rowHeight);
+    }
+
+    private void drawVerticalRowLines(int rowX, PdfTable table, List<PdfTableCell> cells, int rowHeight) {
         int cellX = rowX;
-        for (int j=0; j<table.getColumnWidths().size(); j++) {
-        	cellX += table.getColumnWidths().get(j);
+        for (PdfTableCell cell : cells) {
+
+            for (int c=0; c<cell.getPosition().getColspan(); c++) {
+                cellX += table.getColumnWidths().get(cell.getPosition().getColumn()-1+c);
+            }
             line(new PdfPoint(cellX, currentY), new PdfPoint(cellX, currentY - rowHeight));
         }
+    }
+
+    private void drawBottomHorizontalTableLine(int rowX, int rowHeight, int rowWidth) {
+        line(new PdfPoint(rowX, currentY - rowHeight), new PdfPoint(rowWidth, currentY - rowHeight));
+    }
+
+    private void drawRightVerticalTableLine(int rowHeight, int rowWidth) {
+        line(new PdfPoint(rowWidth, currentY), new PdfPoint(rowWidth, currentY - rowHeight));
+    }
+
+    private void drawLeftVerticalTableLine(int rowX, int rowHeight) {
+        line(new PdfPoint(rowX, currentY), new PdfPoint(rowX, currentY - rowHeight));
+    }
+
+    private void drawTopHorizontalTableLine(int rowX, int rowWidth) {
+        line(new PdfPoint(rowX, currentY), new PdfPoint(rowWidth, currentY));
     }
 
     public void setPageTop(int pageTop) {

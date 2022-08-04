@@ -15,8 +15,8 @@ public class PdfTableCell {
      * The position of the cell within the table, consisting of the row and column.
      * Both starting at position 1.
      */
-    private PdfTableCellPosition position;
-    private String content;
+    private final PdfTableCellPosition position;
+    private final String content;
 
     private PdfFont font;
 
@@ -59,20 +59,22 @@ public class PdfTableCell {
         this.font = font;
     }
 
-    public void init(int tableWidth, int numberOfColumns, PdfFont font, LinkedList<Integer> columnWidths) {
+    public void init(PdfFont font, LinkedList<Integer> columnWidths) {
 
         if (this.font == null) {
             this.font = font;
         }
 
-        calculateCellWidth(tableWidth, numberOfColumns, columnWidths);
+        calculateCellWidth(columnWidths);
         splitUpText();
         calculateCellHeight();
     }
 
-    private void calculateCellWidth(int tableWidth, int numberOfColumns, LinkedList<Integer> columnWidths) {
-        
-    	width = columnWidths.get(position.getColumn()-1);
+    private void calculateCellWidth(LinkedList<Integer> columnWidths) {
+
+        for (int i=0; i<position.getColspan(); i++) {
+            width += columnWidths.get(position.getColumn()-1+i);
+        }
         contentWidth = width - MARGIN_LEFT - MARGIN_RIGHT;
     }
 
@@ -148,7 +150,7 @@ public class PdfTableCell {
             // the next word didn't fit into the cell.
             // Split up the word forcefully.
             String wordToSplitUp = words[0];
-            String remainingWord = "";
+            StringBuilder remainingWord = new StringBuilder("");
             float textWidth = 0f;
             for (int i=0; i<wordToSplitUp.length(); i++) {
                 textWidth += font.getFont().getStringWidth(result) / 1000 * font.getSize();
@@ -156,12 +158,12 @@ public class PdfTableCell {
                     result += wordToSplitUp.charAt(i);
                 }
                 else {
-                    remainingWord += wordToSplitUp.charAt(i);
+                    remainingWord.append(wordToSplitUp.charAt(i));
                 }
             }
 
             remainingWords = new LinkedList<>();
-            remainingWords.add(remainingWord);
+            remainingWords.add(remainingWord.toString());
         }
 
         String[] remaining = remainingWords.toArray(new String[0]);
@@ -188,10 +190,10 @@ public class PdfTableCell {
         splitUpLines = lines.toArray(new String[0]);
     }
 
-    private class SplitInformation {
+    private static class SplitInformation {
 
-        private String[] remainingWords;
-        private String line;
+        private final String[] remainingWords;
+        private final String line;
 
         public SplitInformation(String[] remainingWords, String line) {
             this.remainingWords = remainingWords;
