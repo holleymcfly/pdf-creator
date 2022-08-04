@@ -8,6 +8,7 @@ import io.github.holleymcfly.pdf.model.PdfTableCell;
 import io.github.holleymcfly.pdf.model.PdfTableCellPosition;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.text.SimpleDateFormat;
@@ -19,7 +20,7 @@ public class PdfCreatorTest {
     @Test
     // Don't run the test automatically as it creates a document in the local file system.
     // This is only for manual testing purposes.
-    // @Disabled
+    @Disabled
     public void createSimpleTextDocument() {
 
         PdfFont headerFont = new PdfFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_OBLIQUE), 8);
