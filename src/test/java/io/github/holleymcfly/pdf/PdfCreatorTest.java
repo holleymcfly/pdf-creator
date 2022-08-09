@@ -2,13 +2,11 @@ package io.github.holleymcfly.pdf;
 
 import io.github.holleymcfly.pdf.core.PdfCreator;
 import io.github.holleymcfly.pdf.core.PdfCreatorBuilder;
-import io.github.holleymcfly.pdf.model.PdfFont;
-import io.github.holleymcfly.pdf.model.PdfTable;
-import io.github.holleymcfly.pdf.model.PdfTableCell;
-import io.github.holleymcfly.pdf.model.PdfTableCellPosition;
+import io.github.holleymcfly.pdf.model.*;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 
 import java.text.SimpleDateFormat;
@@ -26,6 +24,7 @@ public class PdfCreatorTest {
         PdfFont headerFont = new PdfFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_OBLIQUE), 8);
         PdfFont headlineFont = new PdfFont(new PDType1Font(Standard14Fonts.FontName.COURIER_BOLD), 22);
         PdfFont contentFont = new PdfFont(new PDType1Font(Standard14Fonts.FontName.TIMES_ROMAN), 12);
+        PdfFont contentFontBold = new PdfFont(new PDType1Font(Standard14Fonts.FontName.TIMES_BOLD), 12);
         PdfFont footerFont = new PdfFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_OBLIQUE), 8);
         PdfFont tableHeaderFont = new PdfFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 14);
 
@@ -42,7 +41,11 @@ public class PdfCreatorTest {
         pdfCreator.addNewLine(contentFont);
 
         // Content
-        pdfCreator.addTextLeftAligned(LINE1, contentFont);
+        LinkedList<PdfFormattedText> line1 = new LinkedList<>();
+        line1.add(new PdfFormattedText(LINE1_1, contentFont));
+        line1.add(new PdfFormattedText(LINE1_2, contentFontBold));
+        line1.add(new PdfFormattedText(LINE1_3, contentFont));
+        pdfCreator.addTextLeftAligned(line1);
         pdfCreator.addNewLine(contentFont);
         pdfCreator.addTextLeftAligned(LINE3, contentFont);
 
@@ -87,7 +90,9 @@ public class PdfCreatorTest {
         return table;
     }
 
-    private final static String LINE1 = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam ornare dui nisl, in congue mauris tincidunt nec. Nam nec sapien eleifend, aliquam purus vitae, iaculis ligula. Donec non metus id nulla imperdiet molestie sed eget nibh. Mauris efficitur porttitor consectetur. Mauris imperdiet, mauris quis vehicula iaculis, massa metus lobortis felis, nec vehicula mauris enim vitae nulla. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam volutpat tristique tortor, ut pellentesque dui luctus non. Aliquam pharetra eleifend porttitor. Cras maximus ultricies eleifend. Nunc libero mi, facilisis quis fermentum sit amet, maximus nec libero. Praesent ultricies arcu sit amet velit aliquet, vel tincidunt odio iaculis. Aenean tempus odio ut est laoreet, sit amet bibendum justo efficitur. Nam ornare, enim a hendrerit lacinia, ligula libero tempus ipsum, sit amet luctus felis lectus sed dui. Nam dictum ultrices consequat.";
+    private final static String LINE1_1 = "Lorem ipsum dolor sit amet, ";
+    private final static String LINE1_2 = "consectetur adipiscing elit. ";
+    private final static String LINE1_3 = "Nam ornare dui nisl, in congue mauris tincidunt nec. Nam nec sapien eleifend, aliquam purus vitae, iaculis ligula. Donec non metus id nulla imperdiet molestie sed eget nibh. Mauris efficitur porttitor consectetur. Mauris imperdiet, mauris quis vehicula iaculis, massa metus lobortis felis, nec vehicula mauris enim vitae nulla. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam volutpat tristique tortor, ut pellentesque dui luctus non. Aliquam pharetra eleifend porttitor. Cras maximus ultricies eleifend. Nunc libero mi, facilisis quis fermentum sit amet, maximus nec libero. Praesent ultricies arcu sit amet velit aliquet, vel tincidunt odio iaculis. Aenean tempus odio ut est laoreet, sit amet bibendum justo efficitur. Nam ornare, enim a hendrerit lacinia, ligula libero tempus ipsum, sit amet luctus felis lectus sed dui. Nam dictum ultrices consequat.";
     private final static String LINE2 = "Maecenas condimentum elit ac consequat semper. Maecenas sollicitudin suscipit dolor in mollis. Proin quis porttitor urna. Mauris bibendum finibus ex et lacinia. Curabitur viverra ornare est, a interdum augue pulvinar ultricies. Mauris eu libero eleifend, efficitur felis et, volutpat odio. Duis ex eros, pretium et diam a, posuere varius magna. Vestibulum porta erat et est fringilla suscipit. Suspendisse luctus turpis vel tincidunt ullamcorper. Duis quis purus tellus. Nunc sit amet lectus sed ante consequat lobortis et a elit. In maximus ultricies mauris vel imperdiet. Nulla pulvinar semper nisl at tristique. Morbi nec turpis eu odio pretium blandit. Fusce id est ullamcorper, ultrices est in, interdum elit. Nullam at lobortis erat.";
     private final static String LINE3 = "Curabitur at laoreet leo. Morbi ut ex metus. Donec egestas, orci et hendrerit dapibus, orci tortor malesuada lacus, eu rutrum eros mi ut quam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Integer in ligula nec lacus mollis finibus ut vel elit. Phasellus auctor interdum tincidunt. In dapibus augue libero, at auctor augue dignissim ultricies. Vivamus finibus urna placerat odio volutpat porttitor. Vivamus ut posuere ligula, et interdum enim. Mauris luctus sodales justo. In a elit libero. Sed viverra et ex ut consectetur. Curabitur feugiat arcu ac nisi condimentum commodo. Maecenas condimentum elit ac consequat semper. Maecenas sollicitudin suscipit dolor in mollis. Proin quis porttitor urna. Mauris bibendum finibus ex et lacinia. Curabitur viverra ornare est, a interdum augue pulvinar ultricies. Mauris eu libero eleifend, efficitur felis et, volutpat odio. Duis ex eros, pretium et diam a, posuere varius magna. Vestibulum porta erat et est fringilla suscipit. Suspendisse luctus turpis vel tincidunt ullamcorper. Duis quis purus tellus. Nunc sit amet lectus sed ante consequat lobortis et a elit. In maximus ultricies mauris vel imperdiet. Nulla pulvinar semper nisl at tristique. Morbi nec turpis eu odio pretium blandit. Fusce id est ullamcorper, ultrices est in, interdum elit. Nullam at lobortis erat.";
 }

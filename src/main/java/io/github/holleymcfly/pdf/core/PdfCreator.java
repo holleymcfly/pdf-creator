@@ -7,12 +7,13 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 
 public class PdfCreator {
 
     public final static int DEFAULT_MARGIN_LEFT = 25;
-    public final static int DEFAULT_MARGIN_RIGHT = 50;
+    public final static int DEFAULT_MARGIN_RIGHT = 70;
     public final static int DEFAULT_PAGE_END = 585;
     public final static int PAGE_BOTTOM_WITHOUT_FOOTER = 30;
     public final static int PAGE_BOTTOM_WITH_FOOTER = 50;
@@ -33,6 +34,7 @@ public class PdfCreator {
     private PdfFont footerFont;
 
     private int pageWidth;
+    private int pageContentWidth;
 
     protected PdfCreator() {
         this.document = new PDDocument();
@@ -50,7 +52,8 @@ public class PdfCreator {
         document.addPage(page);
         currentPage = page;
 
-        pageWidth = (int) currentPage.getMediaBox().getWidth() - DEFAULT_MARGIN_RIGHT;
+        pageWidth = (int) currentPage.getMediaBox().getWidth();
+        pageContentWidth = pageWidth - DEFAULT_MARGIN_LEFT - DEFAULT_MARGIN_RIGHT;
 
         addHeaderToPage();
         addFooterToPage();
@@ -200,6 +203,10 @@ public class PdfCreator {
         addText(text, font, DEFAULT_MARGIN_LEFT, false, false);
     }
 
+    public void addTextLeftAligned(LinkedList<PdfFormattedText> formattedTexts) {
+        addText(formattedTexts, DEFAULT_MARGIN_LEFT, false, false);
+    }
+
     public void addNewLine(PdfFont font) {
         addText("", font, 0, false, false);
     }
@@ -218,15 +225,19 @@ public class PdfCreator {
     }
 
     private void addText(String text, PdfFont font, int x, boolean centered, boolean ignoreBottom) {
-
-        String[] lines = new TextSplitter(new PdfFormattedText(text, font), pageWidth).splitUpText();
+        String[] lines = new TextSplitter(new PdfFormattedText(text, font), pageContentWidth).splitUpText();
         addText(lines, font, x, centered, ignoreBottom, currentY);
     }
 
     private void addText(String text, PdfFont font, int x, boolean centered, boolean ignoreBottom, int y) {
-
-        String[] lines = new TextSplitter(new PdfFormattedText(text, font), pageWidth).splitUpText();
+        String[] lines = new TextSplitter(new PdfFormattedText(text, font), pageContentWidth).splitUpText();
         addText(lines, font, x, centered, ignoreBottom, y);
+    }
+
+    private void addText(LinkedList<PdfFormattedText> formattedTexts, int x, boolean centered, boolean ignoreBottom) {
+        String[] lines = new TextSplitter(formattedTexts, pageContentWidth).splitUpText();
+        // TODO: don't use the same font for all the lines. This must be split up to single words.
+        addText(lines, formattedTexts.getFirst().getFont(), x, centered, ignoreBottom, currentY);
     }
 
     private void addText(String[] textLines, PdfFont font, int x, boolean centered, boolean ignoreBottom, int y) {
@@ -246,7 +257,7 @@ public class PdfCreator {
                 }
 
                 if (centered) {
-                    float textWidth = font.getFont().getStringWidth(line) / 1000 * font.getSize();
+                    float textWidth = TextSplitter.getWidth(line, font);
                     x = (int) (currentPage.getMediaBox().getWidth() - textWidth) / 2;
                 }
 

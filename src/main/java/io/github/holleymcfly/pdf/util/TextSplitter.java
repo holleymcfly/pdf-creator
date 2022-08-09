@@ -5,126 +5,84 @@ import io.github.holleymcfly.pdf.model.PdfFormattedText;
 
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.List;
 
 public class TextSplitter {
 
-    private PdfFormattedText formattedText;
+    private LinkedList<PdfFormattedText> formattedText;
+    private LinkedList<PdfFormattedText> formattedWords;
     private int lineWidth;
 
-    public TextSplitter(PdfFormattedText formattedText, int lineWidth) {
-        this.formattedText = formattedText;
+    public TextSplitter(PdfFormattedText f, int lineWidth) {
+
+        this.formattedText = new LinkedList<>();
+        this.formattedText.add(f);
         this.lineWidth = lineWidth;
+
+        convertToFormattedWords();
+    }
+
+    public TextSplitter(LinkedList<PdfFormattedText> formattedText, int lineWidth) {
+        this.formattedText = new LinkedList<>(formattedText);
+        this.lineWidth = lineWidth;
+
+        convertToFormattedWords();
     }
 
     /**
-     * Add all words to the line that match into the cell width.
+     * Splits up the text information (some text with its fonts) into single word information (single words with
+     * its fonts).
      */
-    private SplitInformation splitLine(String[] words) throws IOException {
+    private void convertToFormattedWords() {
 
-        List<String> remainingWords = new LinkedList<>();
+        formattedWords = new LinkedList<>();
 
-        String result = "";
+        for (PdfFormattedText text : formattedText) {
 
-        boolean first = true;
-        StringBuilder lineTemp = new StringBuilder();
-        for (String word : words) {
-
-            if (!first) {
-                lineTemp.append(" ");
+            String[] words = text.getText().split(" ");
+            for (String word : words) {
+                formattedWords.add(new PdfFormattedText(word, text.getFont()));
             }
-            first = false;
-
-            lineTemp.append(word);
-
-            float textWidth = getWidth(lineTemp.toString(), formattedText.getFont());
-            if (textWidth < lineWidth) {
-                result = lineTemp.toString();
-            }
-            else {
-                remainingWords.add(word);
-            }
-        }
-
-        if ("".equals(result)) {
-            // the next word didn't fit into the cell.
-            // Split up the word forcefully.
-            String wordToSplitUp = words[0];
-            StringBuilder remainingWord = new StringBuilder("");
-            float textWidth = 0f;
-            for (int i=0; i<wordToSplitUp.length(); i++) {
-                textWidth += getWidth(result, formattedText.getFont());
-                if (textWidth < lineWidth) {
-                    result += wordToSplitUp.charAt(i);
-                }
-                else {
-                    remainingWord.append(wordToSplitUp.charAt(i));
-                }
-            }
-
-            remainingWords = new LinkedList<>();
-            remainingWords.add(remainingWord.toString());
-        }
-
-        String[] remaining = remainingWords.toArray(new String[0]);
-        return new SplitInformation(remaining, result);
-    }
-
-    private static class SplitInformation {
-
-        private final String[] remainingWords;
-        private final String line;
-
-        public SplitInformation(String[] remainingWords, String line) {
-            this.remainingWords = remainingWords;
-            this.line = line;
-        }
-
-        public String[] getRemainingWords() {
-            return remainingWords;
-        }
-
-        public String getLine() {
-            return line;
         }
     }
 
-    /**
-     * <b>Splits up the text to fit into the line.</b>
-     * @return An array with the single lines.
-     */
     public String[] splitUpText() {
 
-        if (formattedText.getText() == null || formattedText.getText().equals("")) {
-            // One empty string leads to a new line.
-            String[] result = new String[1];
-            result[0] = "";
-            return result;
-        }
+        LinkedList<String> result = new LinkedList<>();
 
-        List<String> lines = new LinkedList<>();
+        float textWidth = 0;
+        StringBuilder line = new StringBuilder();
+        for (PdfFormattedText formattedWord : formattedWords) {
 
-        try {
-            String[] singleWords = formattedText.getText().split(" ");
-
-            while (singleWords.length > 0) {
-                SplitInformation si = splitLine(singleWords);
-                lines.add(si.getLine());
-                singleWords = si.getRemainingWords();
+            textWidth += getWidth(formattedWord.getText(), formattedWord.getFont());
+            if (textWidth < lineWidth) {
+                if (line.length() > 0) {
+                    line.append(" ");
+                }
+                line.append(formattedWord.getText());
+            }
+            else {
+                result.add(line.toString());
+                line.setLength(0);
+                line.append(formattedWord.getText());
+                textWidth = getWidth(formattedWord.getText(), formattedWord.getFont());
             }
         }
-        catch (IOException e) {
-            throw new RuntimeException("Could not split up the text of the table cell.", e);
-        }
 
-        return lines.toArray(new String[0]);
+        result.add(line.toString());
+        return result.toArray(new String[0]);
     }
 
     /**
      * <b>Calculates the width of the given text.</b>
      * @return The text width.
      */
-    public float getWidth(String text, PdfFont font) throws IOException {
-        return font.getFont().getStringWidth(text) / 1000 * font.getSize();
+    public static float getWidth(String text, PdfFont font) {
+
+        try {
+            return font.getFont().getStringWidth(text) / 1000 * font.getSize();
+        }
+        catch (IOException e) {
+            throw new RuntimeException("Could not calculate the width of " + text, e);
+        }
     }
 }
