@@ -4,7 +4,7 @@ import io.github.holleymcfly.pdf.model.PdfFont;
 import io.github.holleymcfly.pdf.model.PdfPoint;
 import io.github.holleymcfly.pdf.model.PdfTable;
 import io.github.holleymcfly.pdf.model.PdfTableCell;
-import org.apache.commons.text.WordUtils;
+import io.github.holleymcfly.pdf.util.TextSplitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
@@ -15,6 +15,7 @@ import java.util.List;
 public class PdfCreator {
 
     public final static int DEFAULT_MARGIN_LEFT = 25;
+    public final static int DEFAULT_MARGIN_RIGHT = 50;
     public final static int DEFAULT_PAGE_END = 585;
     public final static int PAGE_BOTTOM_WITHOUT_FOOTER = 30;
     public final static int PAGE_BOTTOM_WITH_FOOTER = 50;
@@ -34,6 +35,8 @@ public class PdfCreator {
     private String footerText;
     private PdfFont footerFont;
 
+    private int pageWidth;
+
     protected PdfCreator() {
         this.document = new PDDocument();
     }
@@ -49,6 +52,8 @@ public class PdfCreator {
         PDPage page = new PDPage();
         document.addPage(page);
         currentPage = page;
+
+        pageWidth = (int) currentPage.getMediaBox().getWidth() - DEFAULT_MARGIN_RIGHT;
 
         addHeaderToPage();
         addFooterToPage();
@@ -216,13 +221,15 @@ public class PdfCreator {
     }
 
     private void addText(String text, PdfFont font, int x, boolean centered, boolean ignoreBottom) {
-        String[] wrT = WordUtils.wrap(text, 110).split("\\r?\\n");
-        addText(wrT, font, x, centered, ignoreBottom, currentY);
+
+        String[] lines = new TextSplitter(text, font, pageWidth).splitUpText();
+        addText(lines, font, x, centered, ignoreBottom, currentY);
     }
 
     private void addText(String text, PdfFont font, int x, boolean centered, boolean ignoreBottom, int y) {
-        String[] wrT = WordUtils.wrap(text, 110).split("\\r?\\n");
-        addText(wrT, font, x, centered, ignoreBottom, y);
+
+        String[] lines = new TextSplitter(text, font, pageWidth).splitUpText();
+        addText(lines, font, x, centered, ignoreBottom, y);
     }
 
     private void addText(String[] textLines, PdfFont font, int x, boolean centered, boolean ignoreBottom, int y) {

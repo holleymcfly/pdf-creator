@@ -1,5 +1,7 @@
 package io.github.holleymcfly.pdf.model;
 
+import io.github.holleymcfly.pdf.util.TextSplitter;
+
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -66,7 +68,7 @@ public class PdfTableCell {
         }
 
         calculateCellWidth(columnWidths);
-        splitUpText();
+        splitUpLines = new TextSplitter(content, font, contentWidth).splitUpText();
         calculateCellHeight();
     }
 
@@ -115,97 +117,5 @@ public class PdfTableCell {
 
     public int getMarginBottom() {
         return MARGIN_BOTTOM;
-    }
-
-    /**
-     * Add all words to the line that match into the cell width.
-     */
-    private SplitInformation splitLine(String[] words) throws IOException {
-
-        List<String> remainingWords = new LinkedList<>();
-
-        String result = "";
-
-        boolean first = true;
-        StringBuilder lineTemp = new StringBuilder();
-        for (String word : words) {
-
-            if (!first) {
-                lineTemp.append(" ");
-            }
-            first = false;
-
-            lineTemp.append(word);
-
-            float textWidth = font.getFont().getStringWidth(lineTemp.toString()) / 1000 * font.getSize();
-            if (textWidth < contentWidth) {
-                result = lineTemp.toString();
-            }
-            else {
-                remainingWords.add(word);
-            }
-        }
-
-        if ("".equals(result)) {
-            // the next word didn't fit into the cell.
-            // Split up the word forcefully.
-            String wordToSplitUp = words[0];
-            StringBuilder remainingWord = new StringBuilder("");
-            float textWidth = 0f;
-            for (int i=0; i<wordToSplitUp.length(); i++) {
-                textWidth += font.getFont().getStringWidth(result) / 1000 * font.getSize();
-                if (textWidth < contentWidth) {
-                    result += wordToSplitUp.charAt(i);
-                }
-                else {
-                    remainingWord.append(wordToSplitUp.charAt(i));
-                }
-            }
-
-            remainingWords = new LinkedList<>();
-            remainingWords.add(remainingWord.toString());
-        }
-
-        String[] remaining = remainingWords.toArray(new String[0]);
-        return new SplitInformation(remaining, result);
-    }
-
-    public void splitUpText() {
-
-        List<String> lines = new LinkedList<>();
-
-        try {
-            String[] singleWords = content.split(" ");
-
-            while (singleWords.length > 0) {
-                SplitInformation si = splitLine(singleWords);
-                lines.add(si.getLine());
-                singleWords = si.getRemainingWords();
-            }
-        }
-        catch (IOException e) {
-            throw new RuntimeException("Could not split up the text of the table cell.", e);
-        }
-
-        splitUpLines = lines.toArray(new String[0]);
-    }
-
-    private static class SplitInformation {
-
-        private final String[] remainingWords;
-        private final String line;
-
-        public SplitInformation(String[] remainingWords, String line) {
-            this.remainingWords = remainingWords;
-            this.line = line;
-        }
-
-        public String[] getRemainingWords() {
-            return remainingWords;
-        }
-
-        public String getLine() {
-            return line;
-        }
     }
 }
