@@ -1,6 +1,7 @@
 package io.github.holleymcfly.pdf.util;
 
 import io.github.holleymcfly.pdf.model.PdfFont;
+import io.github.holleymcfly.pdf.model.PdfFormattedText;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -8,13 +9,11 @@ import java.util.List;
 
 public class TextSplitter {
 
-    private String text;
-    private PdfFont font;
+    private PdfFormattedText formattedText;
     private int lineWidth;
 
-    public TextSplitter(String text, PdfFont font, int lineWidth) {
-        this.text = text;
-        this.font = font;
+    public TextSplitter(PdfFormattedText formattedText, int lineWidth) {
+        this.formattedText = formattedText;
         this.lineWidth = lineWidth;
     }
 
@@ -38,7 +37,7 @@ public class TextSplitter {
 
             lineTemp.append(word);
 
-            float textWidth = font.getFont().getStringWidth(lineTemp.toString()) / 1000 * font.getSize();
+            float textWidth = getWidth(lineTemp.toString(), formattedText.getFont());
             if (textWidth < lineWidth) {
                 result = lineTemp.toString();
             }
@@ -54,7 +53,7 @@ public class TextSplitter {
             StringBuilder remainingWord = new StringBuilder("");
             float textWidth = 0f;
             for (int i=0; i<wordToSplitUp.length(); i++) {
-                textWidth += font.getFont().getStringWidth(result) / 1000 * font.getSize();
+                textWidth += getWidth(result, formattedText.getFont());
                 if (textWidth < lineWidth) {
                     result += wordToSplitUp.charAt(i);
                 }
@@ -96,7 +95,7 @@ public class TextSplitter {
      */
     public String[] splitUpText() {
 
-        if (text == null || text.equals("")) {
+        if (formattedText.getText() == null || formattedText.getText().equals("")) {
             // One empty string leads to a new line.
             String[] result = new String[1];
             result[0] = "";
@@ -106,7 +105,7 @@ public class TextSplitter {
         List<String> lines = new LinkedList<>();
 
         try {
-            String[] singleWords = text.split(" ");
+            String[] singleWords = formattedText.getText().split(" ");
 
             while (singleWords.length > 0) {
                 SplitInformation si = splitLine(singleWords);
@@ -119,5 +118,13 @@ public class TextSplitter {
         }
 
         return lines.toArray(new String[0]);
+    }
+
+    /**
+     * <b>Calculates the width of the given text.</b>
+     * @return The text width.
+     */
+    public float getWidth(String text, PdfFont font) throws IOException {
+        return font.getFont().getStringWidth(text) / 1000 * font.getSize();
     }
 }

@@ -1,9 +1,6 @@
 package io.github.holleymcfly.pdf.core;
 
-import io.github.holleymcfly.pdf.model.PdfFont;
-import io.github.holleymcfly.pdf.model.PdfPoint;
-import io.github.holleymcfly.pdf.model.PdfTable;
-import io.github.holleymcfly.pdf.model.PdfTableCell;
+import io.github.holleymcfly.pdf.model.*;
 import io.github.holleymcfly.pdf.util.TextSplitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -222,13 +219,13 @@ public class PdfCreator {
 
     private void addText(String text, PdfFont font, int x, boolean centered, boolean ignoreBottom) {
 
-        String[] lines = new TextSplitter(text, font, pageWidth).splitUpText();
+        String[] lines = new TextSplitter(new PdfFormattedText(text, font), pageWidth).splitUpText();
         addText(lines, font, x, centered, ignoreBottom, currentY);
     }
 
     private void addText(String text, PdfFont font, int x, boolean centered, boolean ignoreBottom, int y) {
 
-        String[] lines = new TextSplitter(text, font, pageWidth).splitUpText();
+        String[] lines = new TextSplitter(new PdfFormattedText(text, font), pageWidth).splitUpText();
         addText(lines, font, x, centered, ignoreBottom, y);
     }
 

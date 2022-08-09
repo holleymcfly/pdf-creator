@@ -68,7 +68,7 @@ public class PdfTableCell {
         }
 
         calculateCellWidth(columnWidths);
-        splitUpLines = new TextSplitter(content, font, contentWidth).splitUpText();
+        splitUpLines = new TextSplitter(new PdfFormattedText(content, font), contentWidth).splitUpText();
         calculateCellHeight();
     }
 
