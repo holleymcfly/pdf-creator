@@ -1,9 +1,7 @@
 package io.github.holleymcfly.pdf.util;
 
-import io.github.holleymcfly.pdf.model.PdfFont;
 import io.github.holleymcfly.pdf.model.PdfFormattedText;
 
-import java.io.IOException;
 import java.util.LinkedList;
 
 public class TextSplitter {
@@ -45,6 +43,35 @@ public class TextSplitter {
         }
     }
 
+    public LinkedList<LinkedList<PdfFormattedText>> splitUpTextWithWords() {
+
+        LinkedList<LinkedList<PdfFormattedText>> result = new LinkedList<>();
+
+        float textWidth = 0;
+        LinkedList<PdfFormattedText> wordsInALine = new LinkedList<>();
+        for (PdfFormattedText formattedWord : formattedWords) {
+
+            textWidth += TextHelper.getTextWidth(formattedWord.getText(), formattedWord.getFont());
+            if (textWidth < lineWidth) {
+                if (wordsInALine.size() > 0) {
+                    wordsInALine.add(new PdfFormattedText(" " + formattedWord.getText(), formattedWord.getFont()));
+                }
+                else {
+                    wordsInALine.add(new PdfFormattedText(formattedWord.getText(), formattedWord.getFont()));
+                }
+            }
+            else {
+                result.add(new LinkedList<>(wordsInALine));
+                wordsInALine.clear();
+                wordsInALine.add(new PdfFormattedText(formattedWord.getText(), formattedWord.getFont()));
+                textWidth = TextHelper.getTextWidth(formattedWord.getText(), formattedWord.getFont());
+            }
+        }
+
+        result.add(wordsInALine);
+        return result;
+    }
+
     public String[] splitUpText() {
 
         LinkedList<String> result = new LinkedList<>();
@@ -53,7 +80,7 @@ public class TextSplitter {
         StringBuilder line = new StringBuilder();
         for (PdfFormattedText formattedWord : formattedWords) {
 
-            textWidth += getWidth(formattedWord.getText(), formattedWord.getFont());
+            textWidth += TextHelper.getTextWidth(formattedWord.getText(), formattedWord.getFont());
             if (textWidth < lineWidth) {
                 if (line.length() > 0) {
                     line.append(" ");
@@ -64,25 +91,11 @@ public class TextSplitter {
                 result.add(line.toString());
                 line.setLength(0);
                 line.append(formattedWord.getText());
-                textWidth = getWidth(formattedWord.getText(), formattedWord.getFont());
+                textWidth = TextHelper.getTextWidth(formattedWord.getText(), formattedWord.getFont());
             }
         }
 
         result.add(line.toString());
         return result.toArray(new String[0]);
-    }
-
-    /**
-     * <b>Calculates the width of the given text.</b>
-     * @return The text width.
-     */
-    public static float getWidth(String text, PdfFont font) {
-
-        try {
-            return font.getFont().getStringWidth(text) / 1000 * font.getSize();
-        }
-        catch (IOException e) {
-            throw new RuntimeException("Could not calculate the width of " + text, e);
-        }
     }
 }

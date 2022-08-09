@@ -127,6 +127,7 @@ public class PdfTable {
      *
      * @param row    The row of the cell the position shall be returned.
      * @param column The column of the cell the position shall be returned.
+     * @param offset Some offset that will be added to the x position.
      * @return  The x value of the cell, including the offset. -1 if there is no cell at that position.
      */
     public int getXofTableCell(int row, int column, int offset) {
@@ -150,6 +151,7 @@ public class PdfTable {
      * Same as <code>getXofTableCell(int row, int column, int offset)</code>, with a cell as input.<br>
      *
      * @param cell    The cell the position is taken from.
+     * @param offset  Some offset that will be added to the x position.
      * @return  The x value of the cell, including the offset. -1 if there is no cell at that position.
      */
     public int getXofTableCell(PdfTableCell cell, int offset) {

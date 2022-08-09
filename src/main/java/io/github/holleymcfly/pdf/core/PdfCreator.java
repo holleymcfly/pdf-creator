@@ -1,6 +1,7 @@
 package io.github.holleymcfly.pdf.core;
 
 import io.github.holleymcfly.pdf.model.*;
+import io.github.holleymcfly.pdf.util.TextHelper;
 import io.github.holleymcfly.pdf.util.TextSplitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -141,7 +142,7 @@ public class PdfCreator {
         int cellY = currentY;
         for (PdfTableCell cell : cells) {
             int x = table.getXofTableCell(cell, cell.getMarginLeft()) + DEFAULT_MARGIN_LEFT;
-            addText(cell.getSplitUpLines(), cell.getFont(), x, false, false, cellY);
+            addTextLines(cell.getSplitUpLines(), cell.getFont(), x, false, false, cellY);
         }
 
         // When setting the text to table cells, we don't modify the currentY value.
@@ -207,6 +208,10 @@ public class PdfCreator {
         addText(formattedTexts, DEFAULT_MARGIN_LEFT, false, false);
     }
 
+    public void addTextCentered(LinkedList<PdfFormattedText> formattedTexts) {
+        addText(formattedTexts, -1, true, false);
+    }
+
     public void addNewLine(PdfFont font) {
         addText("", font, 0, false, false);
     }
@@ -226,21 +231,67 @@ public class PdfCreator {
 
     private void addText(String text, PdfFont font, int x, boolean centered, boolean ignoreBottom) {
         String[] lines = new TextSplitter(new PdfFormattedText(text, font), pageContentWidth).splitUpText();
-        addText(lines, font, x, centered, ignoreBottom, currentY);
+        addTextLines(lines, font, x, centered, ignoreBottom, currentY);
     }
 
     private void addText(String text, PdfFont font, int x, boolean centered, boolean ignoreBottom, int y) {
         String[] lines = new TextSplitter(new PdfFormattedText(text, font), pageContentWidth).splitUpText();
-        addText(lines, font, x, centered, ignoreBottom, y);
+        addTextLines(lines, font, x, centered, ignoreBottom, y);
     }
 
     private void addText(LinkedList<PdfFormattedText> formattedTexts, int x, boolean centered, boolean ignoreBottom) {
-        String[] lines = new TextSplitter(formattedTexts, pageContentWidth).splitUpText();
-        // TODO: don't use the same font for all the lines. This must be split up to single words.
-        addText(lines, formattedTexts.getFirst().getFont(), x, centered, ignoreBottom, currentY);
+        LinkedList<LinkedList<PdfFormattedText>> lines = new TextSplitter(formattedTexts, pageContentWidth)
+                .splitUpTextWithWords();
+        addTextLines(lines, x, centered, ignoreBottom, currentY);
     }
 
-    private void addText(String[] textLines, PdfFont font, int x, boolean centered, boolean ignoreBottom, int y) {
+    private void addTextLines(LinkedList<LinkedList<PdfFormattedText>> textLines, int x, boolean centered,
+            boolean ignoreBottom, int y) {
+
+        try {
+            PDPageContentStream contentStream = null;
+
+            for (LinkedList<PdfFormattedText> line : textLines) {
+
+                int textHeight = (int) TextHelper.getLineHeight(line);
+
+                y = y - textHeight;
+                if (y <= pageBottom && !ignoreBottom) {
+                    newPage();
+                    y = pageTop;
+                }
+
+                if (centered) {
+                    float textWidth = TextHelper.getTotalWidth(line);
+                    x = (int) (currentPage.getMediaBox().getWidth() - textWidth) / 2;
+                }
+
+                boolean first = true;
+
+                contentStream = newContentStream();
+                contentStream.beginText();
+
+                for (PdfFormattedText word : line) {
+                    if (first) {
+                        contentStream.newLineAtOffset(x, y);
+                        first = false;
+                    }
+                    contentStream.setFont(word.getFont().getFont(), word.getFont().getSize());
+                    contentStream.showText(word.getText());
+                }
+                contentStream.endText();
+                contentStream.close();
+            }
+
+        }
+        catch (IOException e) {
+            throw createRuntimeException(e, "Failed to add text to the page.");
+        }
+
+        currentY = y;
+    }
+
+    private void addTextLines(String[] textLines, PdfFont font, int x, boolean centered, boolean ignoreBottom, int y) {
 
         try {
             PDPageContentStream contentStream = newContentStream();
@@ -257,7 +308,7 @@ public class PdfCreator {
                 }
 
                 if (centered) {
-                    float textWidth = TextSplitter.getWidth(line, font);
+                    float textWidth = TextHelper.getTextWidth(line, font);
                     x = (int) (currentPage.getMediaBox().getWidth() - textWidth) / 2;
                 }
 
