@@ -1,10 +1,10 @@
-package io.github.holleymcfly.pdf.model;
+package io.github.holleymcfly.pdf.model.table;
 
+import io.github.holleymcfly.pdf.model.font.PdfFont;
+import io.github.holleymcfly.pdf.model.PdfFormattedText;
 import io.github.holleymcfly.pdf.util.TextSplitter;
 
-import java.io.IOException;
 import java.util.LinkedList;
-import java.util.List;
 
 public class PdfTableCell {
 

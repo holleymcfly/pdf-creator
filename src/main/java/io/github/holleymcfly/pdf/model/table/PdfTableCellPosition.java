@@ -1,4 +1,4 @@
-package io.github.holleymcfly.pdf.model;
+package io.github.holleymcfly.pdf.model.table;
 
 public class PdfTableCellPosition {
 

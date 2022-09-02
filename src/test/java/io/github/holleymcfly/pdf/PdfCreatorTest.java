@@ -2,12 +2,19 @@ package io.github.holleymcfly.pdf;
 
 import io.github.holleymcfly.pdf.core.PdfCreator;
 import io.github.holleymcfly.pdf.core.PdfCreatorBuilder;
-import io.github.holleymcfly.pdf.model.*;
+import io.github.holleymcfly.pdf.model.PdfFormattedText;
+import io.github.holleymcfly.pdf.model.color.PdfColorBuilder;
+import io.github.holleymcfly.pdf.model.font.PdfFont;
+import io.github.holleymcfly.pdf.model.font.PdfFontBuilder;
+import io.github.holleymcfly.pdf.model.table.PdfTable;
+import io.github.holleymcfly.pdf.model.table.PdfTableCell;
+import io.github.holleymcfly.pdf.model.table.PdfTableCellPosition;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
@@ -20,12 +27,18 @@ public class PdfCreatorTest {
     @Disabled
     public void createSimpleTextDocument() {
 
-        PdfFont headerFont = new PdfFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_OBLIQUE), 8);
-        PdfFont headlineFont = new PdfFont(new PDType1Font(Standard14Fonts.FontName.COURIER_BOLD), 22);
-        PdfFont contentFont = new PdfFont(new PDType1Font(Standard14Fonts.FontName.TIMES_ROMAN), 12);
-        PdfFont contentFontBold = new PdfFont(new PDType1Font(Standard14Fonts.FontName.TIMES_BOLD), 18);
-        PdfFont footerFont = new PdfFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_OBLIQUE), 8);
-        PdfFont tableHeaderFont = new PdfFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD), 14);
+        PdfFont headerFont = new PdfFontBuilder().withFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_OBLIQUE))
+                .withSize(8).build();
+        PdfFont headlineFont = new PdfFontBuilder().withFont(new PDType1Font(Standard14Fonts.FontName.COURIER_BOLD))
+                .withSize(22).build();
+        PdfFont contentFont = new PdfFontBuilder().withFont(new PDType1Font(Standard14Fonts.FontName.TIMES_ROMAN))
+                .build();
+        PdfFont contentFontBold = new PdfFontBuilder().withFont(new PDType1Font(Standard14Fonts.FontName.TIMES_BOLD))
+                .withSize(18).build();
+        PdfFont footerFont = new PdfFontBuilder().withFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_OBLIQUE))
+                .withSize(8).build();
+        PdfFont tableHeaderFont = new PdfFontBuilder().withFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD))
+                .withSize(14).withColor(PdfColorBuilder.createPdfColor(Color.BLUE)).build();
 
         String date = new SimpleDateFormat("EEEEE dd. MMMMM yyyy, HH:mm:ss").format(new Date());
 
@@ -66,12 +79,13 @@ public class PdfCreatorTest {
     private PdfTable createTable(PdfFont contentFont) {
 
     	LinkedList<Integer> columWidths = new LinkedList<>();
-    	columWidths.add(80);
+    	columWidths.add(100);
     	columWidths.add(150);
     	columWidths.add(70);
     	columWidths.add(100);
     	
         PdfTable table = new PdfTable(contentFont, columWidths);
+
         PdfTableCell cell = new PdfTableCell(new PdfTableCellPosition(1, 1), "Dog Leash");
         table.addCell(cell);
         cell = new PdfTableCell(new PdfTableCellPosition(1, 2), "Organic Bike");
@@ -79,6 +93,10 @@ public class PdfCreatorTest {
         cell = new PdfTableCell(new PdfTableCellPosition(1, 4), "Tires for All");
         table.addCell(cell);
         cell = new PdfTableCell(new PdfTableCellPosition(2, 1), "Computer That Rock");
+
+        PdfFont tableCellFont = new PdfFontBuilder().withFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD))
+                .withColor(PdfColorBuilder.createPdfColor(0.2f,0.9f,0.2f,0.1f)).build();
+        cell.setFont(tableCellFont);
         table.addCell(cell);
         cell = new PdfTableCell(new PdfTableCellPosition(2, 2, 2), "I Can't Believe It's Not Internet of Things!");
         table.addCell(cell);

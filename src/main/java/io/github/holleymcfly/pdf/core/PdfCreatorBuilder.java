@@ -1,6 +1,6 @@
 package io.github.holleymcfly.pdf.core;
 
-import io.github.holleymcfly.pdf.model.PdfFont;
+import io.github.holleymcfly.pdf.model.font.PdfFont;
 
 public class PdfCreatorBuilder {
 

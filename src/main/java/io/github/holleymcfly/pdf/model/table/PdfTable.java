@@ -1,4 +1,6 @@
-package io.github.holleymcfly.pdf.model;
+package io.github.holleymcfly.pdf.model.table;
+
+import io.github.holleymcfly.pdf.model.font.PdfFont;
 
 import java.util.*;
 

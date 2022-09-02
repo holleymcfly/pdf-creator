@@ -1,6 +1,9 @@
 package io.github.holleymcfly.pdf.core;
 
 import io.github.holleymcfly.pdf.model.*;
+import io.github.holleymcfly.pdf.model.font.PdfFont;
+import io.github.holleymcfly.pdf.model.table.PdfTable;
+import io.github.holleymcfly.pdf.model.table.PdfTableCell;
 import io.github.holleymcfly.pdf.util.TextHelper;
 import io.github.holleymcfly.pdf.util.TextSplitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -277,6 +280,7 @@ public class PdfCreator {
                         first = false;
                     }
                     contentStream.setFont(word.getFont().getFont(), word.getFont().getSize());
+                    word.getFont().getColor().setNonStrokingToContentStream(contentStream);
                     contentStream.showText(word.getText());
                 }
                 contentStream.endText();
@@ -316,6 +320,7 @@ public class PdfCreator {
                 contentStream.setFont(font.getFont(), font.getSize());
                 contentStream.newLineAtOffset(x, y);
 
+                font.getColor().setNonStrokingToContentStream(contentStream);
                 contentStream.showText(line);
                 contentStream.endText();
             }

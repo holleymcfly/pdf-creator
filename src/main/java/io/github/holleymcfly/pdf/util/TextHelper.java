@@ -1,6 +1,6 @@
 package io.github.holleymcfly.pdf.util;
 
-import io.github.holleymcfly.pdf.model.PdfFont;
+import io.github.holleymcfly.pdf.model.font.PdfFont;
 import io.github.holleymcfly.pdf.model.PdfFormattedText;
 
 import java.io.IOException;

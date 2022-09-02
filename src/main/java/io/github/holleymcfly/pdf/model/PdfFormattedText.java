@@ -1,14 +1,14 @@
 package io.github.holleymcfly.pdf.model;
 
-import java.io.IOException;
+import io.github.holleymcfly.pdf.model.font.PdfFont;
 
 /**
  * Encapsulates a text with a font assigned to it.
  */
 public class PdfFormattedText {
 
-    private String text;
-    private PdfFont font;
+    private final String text;
+    private final PdfFont font;
 
     public PdfFormattedText(String text, PdfFont font) {
         this.text = text;
