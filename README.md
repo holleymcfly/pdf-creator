@@ -25,7 +25,7 @@ PdfCreator pdfCreator = new PdfCreatorBuilder().build();
 
 ### Add some text
 ```
-pdfCreator.addTextLeftAligned("Some text", new PdfFont(new PDType1Font(Standard14Fonts.FontName.TIMES_ROMAN), 12));
+pdfCreator.addTextLeftAligned("Some text", new PdfFontBuilder().build());
 ```
 
 ### Save your document
@@ -37,10 +37,10 @@ That's it!!!
 
 
 ## [Handling Fonts](https://github.com/holleymcfly/pdf-creator/wiki/Handling-fonts)
-The pdf-creator needs the font that shall be used in the document. The font is of type `PdfFont` that contains the font type and its size.
-A PdfFont can be created like this:
+The pdf-creator needs the font that shall be used in the document. The font is of type `PdfFont` that contains the font type, its size and its color.
+A PdfFont is created using the PdfFontBuilder like this:
 ```
-PdfFont font = new PdfFont(new PDType1Font(Standard14Fonts.FontName.TIMES_ROMAN), 12);
+PdfFont font = new PdfFontBuilder().build();
 ```
 
 ## [Creating a new pdf-creator](https://github.com/holleymcfly/pdf-creator/wiki/Creating-new-pdf-creators)
