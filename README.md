@@ -4,7 +4,7 @@
 The goal of this project is to provide an open source API that is easy to use for creating pdf documents.
 It uses the pdfbox project from apache, which offers good functionality, but isn't very easy to use.
 
-For a detailed manual, see this [wiki page](https://github.com/holleymcfly/pdf-creator/wiki/Usage).
+For a detailed manual, see this [wiki page](https://github.com/holleymcfly/pdf-creator/wiki).
 
 ## Getting started
 ### Include the library with maven:
