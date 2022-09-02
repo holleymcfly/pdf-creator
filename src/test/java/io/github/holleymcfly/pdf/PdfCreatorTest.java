@@ -95,7 +95,7 @@ public class PdfCreatorTest {
         cell = new PdfTableCell(new PdfTableCellPosition(2, 1), "Computer That Rock");
 
         PdfFont tableCellFont = new PdfFontBuilder().withFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD))
-                .withColor(PdfColorBuilder.createPdfColor(0.2f,0.9f,0.2f,0.1f)).build();
+                .withColor(PdfColorBuilder.createPdfColor(47, 243, 12)).build();
         cell.setFont(tableCellFont);
         table.addCell(cell);
         cell = new PdfTableCell(new PdfTableCellPosition(2, 2, 2), "I Can't Believe It's Not Internet of Things!");

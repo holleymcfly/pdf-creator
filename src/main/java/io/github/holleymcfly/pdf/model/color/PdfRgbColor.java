@@ -10,10 +10,10 @@ public class PdfRgbColor implements PdfColor {
     private final float g;
     private final float b;
 
-    PdfRgbColor(float r, float g, float b) {
-        this.r = r;
-        this.g = g;
-        this.b = b;
+    PdfRgbColor(int r, int g, int b) {
+        this.r = Float.parseFloat(r+"") / 255;
+        this.g = Float.parseFloat(g+"") / 255;
+        this.b = Float.parseFloat(b+"") / 255;
     }
 
     @Override
