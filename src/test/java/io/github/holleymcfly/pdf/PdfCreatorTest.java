@@ -8,6 +8,7 @@ import io.github.holleymcfly.pdf.model.font.PdfFont;
 import io.github.holleymcfly.pdf.model.font.PdfFontBuilder;
 import io.github.holleymcfly.pdf.model.table.PdfTable;
 import io.github.holleymcfly.pdf.model.table.PdfTableCell;
+import io.github.holleymcfly.pdf.model.table.PdfTableCellBuilder;
 import io.github.holleymcfly.pdf.model.table.PdfTableCellPosition;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
@@ -27,18 +28,30 @@ public class PdfCreatorTest {
     @Disabled
     public void createSimpleTextDocument() {
 
-        PdfFont headerFont = new PdfFontBuilder().withFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_OBLIQUE))
-                .withSize(8).build();
-        PdfFont headlineFont = new PdfFontBuilder().withFont(new PDType1Font(Standard14Fonts.FontName.COURIER_BOLD))
-                .withSize(22).build();
-        PdfFont contentFont = new PdfFontBuilder().withFont(new PDType1Font(Standard14Fonts.FontName.TIMES_ROMAN))
+        PdfFont headerFont = new PdfFontBuilder()
+                .withFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_OBLIQUE))
+                .withSize(8)
                 .build();
-        PdfFont contentFontBold = new PdfFontBuilder().withFont(new PDType1Font(Standard14Fonts.FontName.TIMES_BOLD))
-                .withSize(18).build();
-        PdfFont footerFont = new PdfFontBuilder().withFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_OBLIQUE))
-                .withSize(8).build();
-        PdfFont tableHeaderFont = new PdfFontBuilder().withFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD))
-                .withSize(14).withColor(PdfColorBuilder.createPdfColor(Color.BLUE)).build();
+        PdfFont headlineFont = new PdfFontBuilder()
+                .withFont(new PDType1Font(Standard14Fonts.FontName.COURIER_BOLD))
+                .withSize(22)
+                .build();
+        PdfFont contentFont = new PdfFontBuilder()
+                .withFont(new PDType1Font(Standard14Fonts.FontName.TIMES_ROMAN))
+                .build();
+        PdfFont contentFontBold = new PdfFontBuilder()
+                .withFont(new PDType1Font(Standard14Fonts.FontName.TIMES_BOLD))
+                .withSize(18)
+                .build();
+        PdfFont footerFont = new PdfFontBuilder()
+                .withFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_OBLIQUE))
+                .withSize(8)
+                .build();
+        PdfFont tableHeaderFont = new PdfFontBuilder()
+                .withFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD))
+                .withSize(14)
+                .withColor(PdfColorBuilder.createPdfColor(Color.BLUE))
+                .build();
 
         String date = new SimpleDateFormat("EEEEE dd. MMMMM yyyy, HH:mm:ss").format(new Date());
 
@@ -78,31 +91,54 @@ public class PdfCreatorTest {
 
     private PdfTable createTable(PdfFont contentFont) {
 
-    	LinkedList<Integer> columWidths = new LinkedList<>();
-    	columWidths.add(100);
-    	columWidths.add(150);
-    	columWidths.add(70);
-    	columWidths.add(100);
+    	LinkedList<Float> columWidths = new LinkedList<>();
+    	columWidths.add(100f);
+    	columWidths.add(150f);
+    	columWidths.add(70f);
+    	columWidths.add(100f);
     	
         PdfTable table = new PdfTable(contentFont, columWidths);
 
-        PdfTableCell cell = new PdfTableCell(new PdfTableCellPosition(1, 1), "Dog Leash");
+        PdfTableCell cell = new PdfTableCellBuilder()
+                .withPosition(new PdfTableCellPosition(1, 1))
+                .withContent("Dog Leash")
+                .build();
         table.addCell(cell);
-        cell = new PdfTableCell(new PdfTableCellPosition(1, 2), "Organic Bike");
+        cell = new PdfTableCellBuilder()
+                .withPosition(new PdfTableCellPosition(1, 2))
+                .withContent("Organic Bike")
+                .build();
         table.addCell(cell);
-        cell = new PdfTableCell(new PdfTableCellPosition(1, 4), "Tires for All");
+        cell = new PdfTableCellBuilder()
+                .withPosition(new PdfTableCellPosition(1, 4))
+                .withContent("Tires for All")
+                .withBackgroundColor(PdfColorBuilder.createPdfColor(Color.PINK))
+                .build();
         table.addCell(cell);
-        cell = new PdfTableCell(new PdfTableCellPosition(2, 1), "Computer That Rock");
-
-        PdfFont tableCellFont = new PdfFontBuilder().withFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD))
-                .withColor(PdfColorBuilder.createPdfColor(47, 243, 12)).build();
-        cell.setFont(tableCellFont);
+        cell = new PdfTableCellBuilder()
+                .withPosition(new PdfTableCellPosition(2, 1))
+                .withContent("Computer That Rock")
+                .withFont(new PdfFontBuilder()
+                        .withFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD))
+                        .withColor(PdfColorBuilder.createPdfColor(47, 243, 12))
+                        .build())
+                .withBackgroundColor(PdfColorBuilder.createPdfColor(Color.GRAY))
+                .build();
         table.addCell(cell);
-        cell = new PdfTableCell(new PdfTableCellPosition(2, 2, 2), "I Can't Believe It's Not Internet of Things!");
+        cell = new PdfTableCellBuilder()
+                .withPosition(new PdfTableCellPosition(2, 2, 2))
+                .withContent("I Can't Believe It's Not Internet of Things!")
+                .build();
         table.addCell(cell);
-        cell = new PdfTableCell(new PdfTableCellPosition(1, 3), "Yesterday Smack");
+        cell = new PdfTableCellBuilder()
+                .withPosition(new PdfTableCellPosition(1, 3))
+                .withContent("Yesterday Smack")
+                .build();
         table.addCell(cell);
-        cell = new PdfTableCell(new PdfTableCellPosition(2, 4), "Sneaky Rocker");
+        cell = new PdfTableCellBuilder()
+                .withPosition(new PdfTableCellPosition(2, 4))
+                .withContent("Sneaky Rocker")
+                .build();
         table.addCell(cell);
         return table;
     }

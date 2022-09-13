@@ -2,19 +2,19 @@ package io.github.holleymcfly.pdf.model;
 
 public class PdfPoint {
 
-    private int x;
-    private int y;
+    private float x;
+    private float y;
 
-    public PdfPoint(int x, int y) {
+    public PdfPoint(float x, float y) {
         this.x = x;
         this.y = y;
     }
 
-    public int getX() {
+    public float getX() {
         return x;
     }
 
-    public int getY() {
+    public float getY() {
         return y;
     }
 }

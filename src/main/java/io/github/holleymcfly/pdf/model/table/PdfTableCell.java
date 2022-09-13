@@ -1,5 +1,6 @@
 package io.github.holleymcfly.pdf.model.table;
 
+import io.github.holleymcfly.pdf.model.color.PdfColor;
 import io.github.holleymcfly.pdf.model.font.PdfFont;
 import io.github.holleymcfly.pdf.model.PdfFormattedText;
 import io.github.holleymcfly.pdf.util.TextSplitter;
@@ -8,10 +9,10 @@ import java.util.LinkedList;
 
 public class PdfTableCell {
 
-    private final static int MARGIN_TOP = 3;
-    private final static int MARGIN_BOTTOM = 3;
-    private final static int MARGIN_LEFT = 3;
-    private final static int MARGIN_RIGHT = 3;
+    private final static float MARGIN_TOP = 3;
+    private final static float MARGIN_BOTTOM = 3;
+    private final static float MARGIN_LEFT = 3;
+    private final static float MARGIN_RIGHT = 3;
 
     /**
      * The position of the cell within the table, consisting of the row and column.
@@ -22,27 +23,23 @@ public class PdfTableCell {
 
     private PdfFont font;
 
+    private PdfColor backgroundColor;
+
     // The width of the cell, calculated with regarding the number of cells in a row.
-    private int width;
+    private float width;
 
     // The width of the cell content, i.e. where some text can be placed.
-    private int contentWidth;
+    private float contentWidth;
 
     // The height of the cell, calculated with regarding the text, the font and the cell width.
-    private int height;
+    private float height;
 
     // The text split up into single lines that fit into the cell.
     String[] splitUpLines;
 
-    public PdfTableCell(PdfTableCellPosition position, String content) {
+    PdfTableCell(PdfTableCellPosition position, String content) {
         this.position = position;
         this.content = content;
-    }
-
-    public PdfTableCell(PdfTableCellPosition position, String content, PdfFont font) {
-        this.position = position;
-        this.content = content;
-        this.font = font;
     }
 
     public PdfTableCellPosition getPosition() {
@@ -57,11 +54,19 @@ public class PdfTableCell {
         return font;
     }
 
-    public void setFont(PdfFont font) {
+    void setFont(PdfFont font) {
         this.font = font;
     }
 
-    public void init(PdfFont font, LinkedList<Integer> columnWidths) {
+    public PdfColor getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    void setBackgroundColor(PdfColor backgroundColor) {
+        this.backgroundColor = backgroundColor;
+    }
+
+    public void init(PdfFont font, LinkedList<Float> columnWidths) {
 
         if (this.font == null) {
             this.font = font;
@@ -72,7 +77,7 @@ public class PdfTableCell {
         calculateCellHeight();
     }
 
-    private void calculateCellWidth(LinkedList<Integer> columnWidths) {
+    private void calculateCellWidth(LinkedList<Float> columnWidths) {
 
         for (int i=0; i<position.getColspan(); i++) {
             width += columnWidths.get(position.getColumn()-1+i);
@@ -81,21 +86,21 @@ public class PdfTableCell {
     }
 
     private void calculateCellHeight() {
-        int oneLineHeight = (int) font.getFont().getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * font.getSize();
+        float oneLineHeight = font.getFont().getFontDescriptor().getFontBoundingBox().getHeight() / 1000 * font.getSize();
         int numberOfLines = splitUpLines.length;
 
         height = MARGIN_TOP + (oneLineHeight * numberOfLines) + MARGIN_BOTTOM;
     }
 
-    public int getWidth() {
+    public float getWidth() {
         return width;
     }
 
-    public int getContentWidth() {
+    public float getContentWidth() {
         return contentWidth;
     }
 
-    public int getHeight() {
+    public float getHeight() {
         return height;
     }
 
@@ -103,19 +108,19 @@ public class PdfTableCell {
         return splitUpLines;
     }
 
-    public int getMarginLeft() {
+    public float getMarginLeft() {
         return MARGIN_LEFT;
     }
 
-    public int getMarginRight() {
+    public float getMarginRight() {
         return MARGIN_RIGHT;
     }
 
-    public int getMarginTop() {
+    public float getMarginTop() {
         return MARGIN_TOP;
     }
 
-    public int getMarginBottom() {
+    public float getMarginBottom() {
         return MARGIN_BOTTOM;
     }
 }

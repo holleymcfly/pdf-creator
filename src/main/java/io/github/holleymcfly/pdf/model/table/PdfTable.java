@@ -8,14 +8,14 @@ public class PdfTable {
 
     private final Set<PdfTableCell> cells = new HashSet<>();
     private final PdfFont font;
-    private final int tableWidth;
+    private final float tableWidth;
     private final int numberOfColumns;
-    private final LinkedList<Integer> columnWidths = new LinkedList<>();
+    private final LinkedList<Float> columnWidths = new LinkedList<>();
 
     // Calculated when the table is initialized.
     private int numberOfRows;
 
-    public PdfTable(PdfFont font, int tableWidth, int numberOfColumns) {
+    public PdfTable(PdfFont font, float tableWidth, int numberOfColumns) {
         this.font = font;
         this.tableWidth = tableWidth;
         this.numberOfColumns = numberOfColumns;
@@ -23,17 +23,17 @@ public class PdfTable {
         initColumnWidths();
     }
 
-    public PdfTable(PdfFont font, LinkedList<Integer> columnWidths) {
+    public PdfTable(PdfFont font, LinkedList<Float> columnWidths) {
     	this.font = font;
     	this.numberOfColumns = columnWidths.size();
     	this.columnWidths.addAll(columnWidths);
     	this.tableWidth = calculateCompleteWidth();
     }
     
-    private Integer calculateCompleteWidth() {
+    private float calculateCompleteWidth() {
     	
-    	int w = 0;
-    	for (Integer columnWidth : columnWidths) {
+    	float w = 0;
+    	for (Float columnWidth : columnWidths) {
     		w += columnWidth;
     	}
     	
@@ -43,7 +43,7 @@ public class PdfTable {
     private void initColumnWidths() {
     	
         for (int i=0; i<numberOfColumns; i++) {
-        	int columnWidth = tableWidth / numberOfColumns;
+        	float columnWidth = tableWidth / numberOfColumns;
         	columnWidths.add(columnWidth);
         }	
     }
@@ -78,9 +78,9 @@ public class PdfTable {
         }
     }
 
-    public int getRowHeight(int row) {
+    public float getRowHeight(int row) {
 
-        int maxHeight = 0;
+        float maxHeight = 0;
         for (PdfTableCell cell : getCellsForRowOrdered(row)) {
             if (cell.getHeight() > maxHeight) {
                 maxHeight = cell.getHeight();
@@ -118,7 +118,7 @@ public class PdfTable {
         return font;
     }
 
-    public int getTableWidth() {
+    public float getTableWidth() {
         return tableWidth;
     }
 
@@ -132,10 +132,10 @@ public class PdfTable {
      * @param offset Some offset that will be added to the x position.
      * @return  The x value of the cell, including the offset. -1 if there is no cell at that position.
      */
-    public int getXofTableCell(int row, int column, int offset) {
+    public float getXofTableCell(int row, int column, float offset) {
 
         LinkedList<PdfTableCell> cellsOfRow = getCellsForRowOrdered(row);
-        int x = 0;
+        float x = 0;
         for (PdfTableCell cell : cellsOfRow) {
             if (cell.getPosition().getRow() == row && cell.getPosition().getColumn() == column) {
                 return x + offset;
@@ -150,13 +150,13 @@ public class PdfTable {
     /**
      * <b>Returns the x position of the table cell with the given coordinates.</b><br>
      * <br>
-     * Same as <code>getXofTableCell(int row, int column, int offset)</code>, with a cell as input.<br>
+     * Same as <code>getXofTableCell(int row, int column, float offset)</code>, with a cell as input.<br>
      *
      * @param cell    The cell the position is taken from.
      * @param offset  Some offset that will be added to the x position.
      * @return  The x value of the cell, including the offset. -1 if there is no cell at that position.
      */
-    public int getXofTableCell(PdfTableCell cell, int offset) {
+    public float getXofTableCell(PdfTableCell cell, float offset) {
         return getXofTableCell(cell.getPosition().getRow(), cell.getPosition().getColumn(), offset);
     }
 }

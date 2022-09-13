@@ -8,9 +8,9 @@ public class TextSplitter {
 
     private LinkedList<PdfFormattedText> formattedText;
     private LinkedList<PdfFormattedText> formattedWords;
-    private int lineWidth;
+    private float lineWidth;
 
-    public TextSplitter(PdfFormattedText f, int lineWidth) {
+    public TextSplitter(PdfFormattedText f, float lineWidth) {
 
         this.formattedText = new LinkedList<>();
         this.formattedText.add(f);
@@ -19,7 +19,7 @@ public class TextSplitter {
         convertToFormattedWords();
     }
 
-    public TextSplitter(LinkedList<PdfFormattedText> formattedText, int lineWidth) {
+    public TextSplitter(LinkedList<PdfFormattedText> formattedText, float lineWidth) {
         this.formattedText = new LinkedList<>(formattedText);
         this.lineWidth = lineWidth;
 
