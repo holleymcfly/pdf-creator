@@ -10,6 +10,7 @@ import io.github.holleymcfly.pdf.util.TextSplitter;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -17,13 +18,8 @@ import java.util.List;
 
 public class PdfCreator {
 
-    public final static float DEFAULT_MARGIN_LEFT = 25;
-    public final static float DEFAULT_MARGIN_RIGHT = 70;
-    public final static float DEFAULT_PAGE_END = 585;
     public final static float PAGE_BOTTOM_WITHOUT_FOOTER = 30;
     public final static float PAGE_BOTTOM_WITH_FOOTER = 50;
-    public final static float PAGE_TOP_WITHOUT_HEADER = 750;
-    public final static float PAGE_TOP_WITH_HEADER = 730;
 
     private final PDDocument document;
     private PDPage currentPage;
@@ -40,6 +36,8 @@ public class PdfCreator {
 
     private float pageWidth;
     private float pageContentWidth;
+    private float pageMarginLeft;
+    private float pageMarginRight;
 
     protected PdfCreator() {
         this.document = new PDDocument();
@@ -53,31 +51,45 @@ public class PdfCreator {
      * <b>Inserts a new page into the pdf document.</b>
      */
     public void newPage() {
-        PDPage page = new PDPage();
+
+        PDPage page = new PDPage(PDRectangle.A4);
         document.addPage(page);
         currentPage = page;
 
         pageWidth = currentPage.getMediaBox().getWidth();
-        pageContentWidth = pageWidth - DEFAULT_MARGIN_LEFT - DEFAULT_MARGIN_RIGHT;
+        pageContentWidth = pageWidth - getPageMarginLeft() - getPageMarginRight();
+
+        pageTop = currentPage.getMediaBox().getHeight() - 30;
 
         addHeaderToPage();
         addFooterToPage();
 
-        currentY = pageTop;
+        if (this.headerText != null && this.headerText.length() > 0) {
+            currentY = pageTop - headerFont.getSize() - 30; // Some space between the line and the following text.
+        }
+        else {
+            currentY = pageTop;
+        }
     }
 
     private void addHeaderToPage() {
+
         if (headerText != null && headerText.length() > 0) {
-            addText(headerText, headerFont, DEFAULT_MARGIN_LEFT, false, false, 780);
+            addText(headerText, headerFont, getPageMarginLeft(), false, pageTop);
+
+            float y = pageTop - headerFont.getSize() - 10; // magic 10: some space between text and line
+            float x = pageWidth - getPageMarginRight();
+            line(new PdfPoint(getPageMarginLeft(), y), new PdfPoint(x, y));
         }
-        line(new PdfPoint(DEFAULT_MARGIN_LEFT, 760), new PdfPoint(DEFAULT_PAGE_END, 760));
     }
 
     private void addFooterToPage() {
         if (footerText != null && footerText.length() > 0) {
-            addText(footerText, footerFont, DEFAULT_MARGIN_LEFT, false, true, 35);
+            addText(footerText, footerFont, getPageMarginLeft(), true, 35);
+
+            float x = pageWidth - getPageMarginRight();
+            line(new PdfPoint(getPageMarginLeft(), 40), new PdfPoint(x, 40));
         }
-        line(new PdfPoint(DEFAULT_MARGIN_LEFT, 40), new PdfPoint(DEFAULT_PAGE_END, 40));
     }
 
     /**
@@ -114,7 +126,7 @@ public class PdfCreator {
 
         table.init();
 
-        float tableStartX = DEFAULT_MARGIN_LEFT;
+        float tableStartX = getPageMarginLeft();
 
         for (int i=0; i<table.getNumberOfRows(); i++) {
 
@@ -151,7 +163,7 @@ public class PdfCreator {
             }
 
             float borderWidth = 1;
-            float xStart = table.getXofTableCell(cell, DEFAULT_MARGIN_LEFT + borderWidth/2);
+            float xStart = table.getXofTableCell(cell, getPageMarginLeft() + borderWidth/2);
             float yStart = cellY - table.getRowHeight(cell.getPosition().getRow());
             float width = cell.getWidth() - borderWidth;
             float height = table.getRowHeight(cell.getPosition().getRow()) - borderWidth/2;
@@ -173,7 +185,7 @@ public class PdfCreator {
 
         float cellY = currentY;
         for (PdfTableCell cell : cells) {
-            float x = table.getXofTableCell(cell, cell.getMarginLeft()) + DEFAULT_MARGIN_LEFT;
+            float x = table.getXofTableCell(cell, cell.getMarginLeft()) + getPageMarginLeft();
             addTextLines(cell.getSplitUpLines(), cell.getFont(), x, false, false, cellY);
         }
 
@@ -216,10 +228,6 @@ public class PdfCreator {
         line(new PdfPoint(tableStartX, currentY), new PdfPoint(rowWidth, currentY));
     }
 
-    public void setPageTop(float pageTop) {
-        this.pageTop = pageTop;
-    }
-
     public void setPageBottom(float pageBottom) {
         this.pageBottom = pageBottom;
     }
@@ -234,19 +242,19 @@ public class PdfCreator {
      * @param font  The font to use for printing the text
      */
     public void addTextLeftAligned(String text, PdfFont font) {
-        addText(text, font, DEFAULT_MARGIN_LEFT, false, false);
+        addText(text, font, getPageMarginLeft(), false);
     }
 
     public void addTextLeftAligned(LinkedList<PdfFormattedText> formattedTexts) {
-        addText(formattedTexts, DEFAULT_MARGIN_LEFT, false, false);
+        addText(formattedTexts, getPageMarginLeft(), false);
     }
 
     public void addTextCentered(LinkedList<PdfFormattedText> formattedTexts) {
-        addText(formattedTexts, -1, true, false);
+        addText(formattedTexts, -1, true);
     }
 
     public void addNewLine(PdfFont font) {
-        addText("", font, 0, false, false);
+        addText("", font, 0, false);
     }
 
     /**
@@ -259,44 +267,42 @@ public class PdfCreator {
      * @param font  The font to use for printing the text
      */
     public void addTextCentered(String text, PdfFont font) {
-        addText(text, font, -1, true, false);
+        addText(text, font, -1, true);
     }
 
-    private void addText(String text, PdfFont font, float x, boolean centered, boolean ignoreBottom) {
+    private void addText(String text, PdfFont font, float x, boolean centered) {
         String[] lines = new TextSplitter(new PdfFormattedText(text, font), pageContentWidth).splitUpText();
-        addTextLines(lines, font, x, centered, ignoreBottom, currentY);
+        addTextLines(lines, font, x, centered, false, currentY);
     }
 
-    private void addText(String text, PdfFont font, float x, boolean centered, boolean ignoreBottom, float y) {
+    private void addText(String text, PdfFont font, float x, boolean ignoreBottom, float y) {
         String[] lines = new TextSplitter(new PdfFormattedText(text, font), pageContentWidth).splitUpText();
-        addTextLines(lines, font, x, centered, ignoreBottom, y);
+        addTextLines(lines, font, x, false, ignoreBottom, y);
     }
 
-    private void addText(LinkedList<PdfFormattedText> formattedTexts, float x, boolean centered, boolean ignoreBottom) {
+    private void addText(LinkedList<PdfFormattedText> formattedTexts, float x, boolean centered) {
         LinkedList<LinkedList<PdfFormattedText>> lines = new TextSplitter(formattedTexts, pageContentWidth)
                 .splitUpTextWithWords();
-        addTextLines(lines, x, centered, ignoreBottom, currentY);
+        addTextLines(lines, x, centered, currentY);
     }
 
-    private void addTextLines(LinkedList<LinkedList<PdfFormattedText>> textLines, float x, boolean centered,
-            boolean ignoreBottom, float y) {
+    private void addTextLines(LinkedList<LinkedList<PdfFormattedText>> textLines, float x, boolean centered, float y) {
 
         try {
-            PDPageContentStream contentStream = null;
+            PDPageContentStream contentStream;
 
             for (LinkedList<PdfFormattedText> line : textLines) {
 
                 float textHeight = TextHelper.getLineHeight(line);
 
                 y = y - textHeight;
-                if (y <= pageBottom && !ignoreBottom) {
+                if (y <= pageBottom) {
                     newPage();
-                    y = pageTop;
+                    y = currentY;
                 }
 
                 if (centered) {
-                    float textWidth = TextHelper.getTotalWidth(line);
-                    x = (currentPage.getMediaBox().getWidth() - textWidth) / 2;
+                    x = getXForCenteredText(line);
                 }
 
                 boolean first = true;
@@ -325,6 +331,16 @@ public class PdfCreator {
         currentY = y;
     }
 
+    private float getXForCenteredText(PdfFont font, String line) {
+        float textWidth = TextHelper.getTextWidth(line, font);
+        return ( (pageWidth + getPageMarginLeft() - getPageMarginRight()) / 2) - (textWidth / 2);
+    }
+
+    private float getXForCenteredText(LinkedList<PdfFormattedText> line) {
+        float textWidth = TextHelper.getTotalWidth(line);
+        return ( (pageWidth + getPageMarginLeft() - getPageMarginRight()) / 2) - (textWidth / 2);
+    }
+
     private void addTextLines(String[] textLines, PdfFont font, float x, boolean centered, boolean ignoreBottom, float y) {
 
         try {
@@ -338,12 +354,11 @@ public class PdfCreator {
                     contentStream.close();
                     newPage();
                     contentStream = newContentStream();
-                    y = pageTop;
+                    y = currentY;
                 }
 
                 if (centered) {
-                    float textWidth = TextHelper.getTextWidth(line, font);
-                    x = (currentPage.getMediaBox().getWidth() - textWidth) / 2;
+                    x = getXForCenteredText(font, line);
                 }
 
                 contentStream.beginText();
@@ -415,6 +430,22 @@ public class PdfCreator {
 
     protected void setFooterFont(PdfFont footerFont) {
         this.footerFont = footerFont;
+    }
+
+    protected void setPageMarginLeft(float pageMarginLeft) {
+        this.pageMarginLeft = pageMarginLeft;
+    }
+
+    public float getPageMarginLeft() {
+        return pageMarginLeft;
+    }
+
+    public float getPageMarginRight() {
+        return pageMarginRight;
+    }
+
+    protected void setPageMarginRight(float pageMarginRight) {
+        this.pageMarginRight = pageMarginRight;
     }
 
     private RuntimeException createRuntimeException(Exception e, String message) {

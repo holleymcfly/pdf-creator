@@ -6,9 +6,9 @@ import java.util.LinkedList;
 
 public class TextSplitter {
 
-    private LinkedList<PdfFormattedText> formattedText;
+    private final LinkedList<PdfFormattedText> formattedText;
     private LinkedList<PdfFormattedText> formattedWords;
-    private float lineWidth;
+    private final float lineWidth;
 
     public TextSplitter(PdfFormattedText f, float lineWidth) {
 
@@ -52,6 +52,7 @@ public class TextSplitter {
         for (PdfFormattedText formattedWord : formattedWords) {
 
             textWidth += TextHelper.getTextWidth(formattedWord.getText(), formattedWord.getFont());
+            textWidth += TextHelper.getTextWidth(" ", formattedWord.getFont());
             if (textWidth < lineWidth) {
                 if (wordsInALine.size() > 0) {
                     wordsInALine.add(new PdfFormattedText(" " + formattedWord.getText(), formattedWord.getFont()));
@@ -81,6 +82,7 @@ public class TextSplitter {
         for (PdfFormattedText formattedWord : formattedWords) {
 
             textWidth += TextHelper.getTextWidth(formattedWord.getText(), formattedWord.getFont());
+            textWidth += TextHelper.getTextWidth(" ", formattedWord.getFont());
             if (textWidth < lineWidth) {
                 if (line.length() > 0) {
                     line.append(" ");
