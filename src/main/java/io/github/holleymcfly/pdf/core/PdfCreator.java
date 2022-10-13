@@ -18,16 +18,12 @@ import java.util.List;
 
 public class PdfCreator {
 
-    public final static float PAGE_BOTTOM_WITHOUT_FOOTER = 30;
-    public final static float PAGE_BOTTOM_WITH_FOOTER = 50;
-
     private final PDDocument document;
     private PDPage currentPage;
     private float currentY = 0;
 
 
     private float pageTop;
-    private float pageBottom;
 
     private String headerText;
     private PdfFont headerFont;
@@ -36,8 +32,11 @@ public class PdfCreator {
 
     private float pageWidth;
     private float pageContentWidth;
+
     private float pageMarginLeft;
     private float pageMarginRight;
+    private float pageMarginTop;
+    private float pageMarginBottom;
 
     protected PdfCreator() {
         this.document = new PDDocument();
@@ -59,7 +58,7 @@ public class PdfCreator {
         pageWidth = currentPage.getMediaBox().getWidth();
         pageContentWidth = pageWidth - getPageMarginLeft() - getPageMarginRight();
 
-        pageTop = currentPage.getMediaBox().getHeight() - 30;
+        pageTop = currentPage.getMediaBox().getHeight() - pageMarginTop - 30; // Some space to the top end of the page.
 
         addHeaderToPage();
         addFooterToPage();
@@ -75,20 +74,22 @@ public class PdfCreator {
     private void addHeaderToPage() {
 
         if (headerText != null && headerText.length() > 0) {
-            addText(headerText, headerFont, getPageMarginLeft(), false, pageTop);
+            addText(headerText, headerFont, getPageMarginLeft(), false, pageTop + pageMarginTop);
 
-            float y = pageTop - headerFont.getSize() - 10; // magic 10: some space between text and line
+            float y = pageTop + pageMarginTop - headerFont.getSize() - 10; // magic 10: some space between text and line
             float x = pageWidth - getPageMarginRight();
             line(new PdfPoint(getPageMarginLeft(), y), new PdfPoint(x, y));
         }
     }
 
     private void addFooterToPage() {
+
         if (footerText != null && footerText.length() > 0) {
             addText(footerText, footerFont, getPageMarginLeft(), true, 35);
 
             float x = pageWidth - getPageMarginRight();
-            line(new PdfPoint(getPageMarginLeft(), 40), new PdfPoint(x, 40));
+            float y = 40; // magic 40: can be set fixed, because the points count from the bottom.
+            line(new PdfPoint(getPageMarginLeft(), y), new PdfPoint(x, y));
         }
     }
 
@@ -151,7 +152,7 @@ public class PdfCreator {
     }
 
     private boolean fitsTableOnPage(float height) {
-        return (currentY - height) > pageBottom;
+        return (currentY - height) > pageMarginBottom;
     }
 
     private void fillTableCellBackgrounds(PdfTable table, List<PdfTableCell> cells) {
@@ -228,8 +229,12 @@ public class PdfCreator {
         line(new PdfPoint(tableStartX, currentY), new PdfPoint(rowWidth, currentY));
     }
 
-    public void setPageBottom(float pageBottom) {
-        this.pageBottom = pageBottom;
+    protected void setPageMarginTop(float pageMarginTop) {
+        this.pageMarginTop = pageMarginTop;
+    }
+
+    protected void setPageMarginBottom(float pageMarginBottom) {
+        this.pageMarginBottom = pageMarginBottom;
     }
 
     /**
@@ -296,7 +301,7 @@ public class PdfCreator {
                 float textHeight = TextHelper.getLineHeight(line);
 
                 y = y - textHeight;
-                if (y <= pageBottom) {
+                if (y <= pageMarginBottom) {
                     newPage();
                     y = currentY;
                 }
@@ -350,7 +355,7 @@ public class PdfCreator {
 
             for (String line : textLines) {
                 y = y - textHeight;
-                if (y <= pageBottom && !ignoreBottom) {
+                if (y <= pageMarginBottom && !ignoreBottom) {
                     contentStream.close();
                     newPage();
                     contentStream = newContentStream();

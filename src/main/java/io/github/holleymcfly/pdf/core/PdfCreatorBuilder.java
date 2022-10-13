@@ -10,6 +10,8 @@ public class PdfCreatorBuilder {
     private PdfFont footerFont;
     private float pageMarginLeft = 25; // Set some suitable default.
     private float pageMarginRight = 50; // Set some suitable default.
+    private Float pageMarginBottom = null;
+    private float pageMarginTop = 30; // Set some suitable default.
 
     public PdfCreatorBuilder withHeader(String headerText, PdfFont headerFont) {
         this.headerText = headerText;
@@ -33,6 +35,16 @@ public class PdfCreatorBuilder {
         return this;
     }
 
+    public PdfCreatorBuilder withPageMarginBottom(float pageMarginBottom) {
+        this.pageMarginBottom = pageMarginBottom;
+        return this;
+    }
+
+    public PdfCreatorBuilder withPageMarginTop(float pageMarginTop) {
+        this.pageMarginTop = pageMarginTop;
+        return this;
+    }
+
     public PdfCreator build() {
 
         PdfCreator pdfCreator = new PdfCreator();
@@ -44,12 +56,22 @@ public class PdfCreatorBuilder {
         if (this.footerText != null && this.footerText.length() > 0) {
             pdfCreator.setFooterText(this.footerText);
             pdfCreator.setFooterFont(this.footerFont);
-            pdfCreator.setPageBottom(PdfCreator.PAGE_BOTTOM_WITH_FOOTER);
+
+            if (this.pageMarginBottom == null) {
+                pdfCreator.setPageMarginBottom(50); // Set a default.
+            }
         }
         else {
-            pdfCreator.setPageBottom(PdfCreator.PAGE_BOTTOM_WITHOUT_FOOTER);
+            if (this.pageMarginBottom == null) {
+                pdfCreator.setPageMarginBottom(30); // Set a default.
+            }
         }
 
+        if (this.pageMarginBottom != null) {
+            pdfCreator.setPageMarginBottom(this.pageMarginBottom);
+        }
+
+        pdfCreator.setPageMarginTop(this.pageMarginTop);
         pdfCreator.setPageMarginLeft(this.pageMarginLeft);
         pdfCreator.setPageMarginRight(this.pageMarginRight);
         pdfCreator.init();
