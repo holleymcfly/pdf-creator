@@ -22,6 +22,7 @@ public class PdfCreator {
     private PDPage currentPage;
     private float currentY = 0;
 
+    private PDRectangle pageFormat;
 
     private float pageTop;
 
@@ -51,7 +52,7 @@ public class PdfCreator {
      */
     public void newPage() {
 
-        PDPage page = new PDPage(PDRectangle.A4);
+        PDPage page = new PDPage(pageFormat);
         document.addPage(page);
         currentPage = page;
 
@@ -451,6 +452,10 @@ public class PdfCreator {
 
     protected void setPageMarginRight(float pageMarginRight) {
         this.pageMarginRight = pageMarginRight;
+    }
+
+    protected void setPageFormat(PDRectangle pageFormat) {
+        this.pageFormat = pageFormat;
     }
 
     private RuntimeException createRuntimeException(Exception e, String message) {

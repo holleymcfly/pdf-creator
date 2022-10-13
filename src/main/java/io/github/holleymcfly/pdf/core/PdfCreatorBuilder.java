@@ -1,6 +1,7 @@
 package io.github.holleymcfly.pdf.core;
 
 import io.github.holleymcfly.pdf.model.font.PdfFont;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
 
 public class PdfCreatorBuilder {
 
@@ -12,6 +13,7 @@ public class PdfCreatorBuilder {
     private float pageMarginRight = 50; // Set some suitable default.
     private Float pageMarginBottom = null;
     private float pageMarginTop = 30; // Set some suitable default.
+    private PDRectangle pageFormat = PDRectangle.A4;
 
     public PdfCreatorBuilder withHeader(String headerText, PdfFont headerFont) {
         this.headerText = headerText;
@@ -45,6 +47,11 @@ public class PdfCreatorBuilder {
         return this;
     }
 
+    public PdfCreatorBuilder withPageFormat(PDRectangle pageFormat) {
+        this.pageFormat = pageFormat;
+        return this;
+    }
+
     public PdfCreator build() {
 
         PdfCreator pdfCreator = new PdfCreator();
@@ -74,6 +81,7 @@ public class PdfCreatorBuilder {
         pdfCreator.setPageMarginTop(this.pageMarginTop);
         pdfCreator.setPageMarginLeft(this.pageMarginLeft);
         pdfCreator.setPageMarginRight(this.pageMarginRight);
+        pdfCreator.setPageFormat(this.pageFormat);
         pdfCreator.init();
         return pdfCreator;
     }
