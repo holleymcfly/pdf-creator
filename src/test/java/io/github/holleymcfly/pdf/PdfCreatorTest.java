@@ -12,7 +12,6 @@ import io.github.holleymcfly.pdf.model.table.PdfTableCellBuilder;
 import io.github.holleymcfly.pdf.model.table.PdfTableCellPosition;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -30,26 +29,26 @@ public class PdfCreatorTest {
     public void createTextDocumentDinA4() {
 
         PdfFont headerFont = new PdfFontBuilder()
-                .withFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_OBLIQUE))
+                .withFont(PDType1Font.HELVETICA_OBLIQUE)
                 .withSize(8)
                 .build();
         PdfFont headlineFont = new PdfFontBuilder()
-                .withFont(new PDType1Font(Standard14Fonts.FontName.COURIER_BOLD))
+                .withFont(PDType1Font.COURIER_BOLD)
                 .withSize(22)
                 .build();
         PdfFont contentFont = new PdfFontBuilder()
-                .withFont(new PDType1Font(Standard14Fonts.FontName.TIMES_ROMAN))
+                .withFont(PDType1Font.TIMES_ROMAN)
                 .build();
         PdfFont contentFontBold = new PdfFontBuilder()
-                .withFont(new PDType1Font(Standard14Fonts.FontName.TIMES_BOLD))
+                .withFont(PDType1Font.TIMES_BOLD)
                 .withSize(18)
                 .build();
         PdfFont footerFont = new PdfFontBuilder()
-                .withFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_OBLIQUE))
+                .withFont(PDType1Font.HELVETICA_OBLIQUE)
                 .withSize(8)
                 .build();
         PdfFont tableHeaderFont = new PdfFontBuilder()
-                .withFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD))
+                .withFont(PDType1Font.HELVETICA_BOLD)
                 .withSize(14)
                 .withColor(PdfColorBuilder.createPdfColor(Color.BLUE))
                 .build();
@@ -125,7 +124,7 @@ public class PdfCreatorTest {
                 .withPosition(new PdfTableCellPosition(2, 1))
                 .withContent("Computer That Rock")
                 .withFont(new PdfFontBuilder()
-                        .withFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD))
+                        .withFont(PDType1Font.HELVETICA_BOLD)
                         .withColor(PdfColorBuilder.createPdfColor(47, 243, 12))
                         .build())
                 .withBackgroundColor(PdfColorBuilder.createPdfColor(Color.GRAY))
@@ -156,26 +155,26 @@ public class PdfCreatorTest {
     public void createTextDocumentDinA5() {
 
         PdfFont headerFont = new PdfFontBuilder()
-                .withFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_OBLIQUE))
+                .withFont(PDType1Font.HELVETICA_OBLIQUE)
                 .withSize(8)
                 .build();
         PdfFont headlineFont = new PdfFontBuilder()
-                .withFont(new PDType1Font(Standard14Fonts.FontName.COURIER_BOLD))
+                .withFont(PDType1Font.COURIER_BOLD)
                 .withSize(22)
                 .build();
         PdfFont contentFont = new PdfFontBuilder()
-                .withFont(new PDType1Font(Standard14Fonts.FontName.TIMES_ROMAN))
+                .withFont(PDType1Font.TIMES_ROMAN)
                 .build();
         PdfFont contentFontBold = new PdfFontBuilder()
-                .withFont(new PDType1Font(Standard14Fonts.FontName.TIMES_BOLD))
+                .withFont(PDType1Font.TIMES_BOLD)
                 .withSize(18)
                 .build();
         PdfFont footerFont = new PdfFontBuilder()
-                .withFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_OBLIQUE))
+                .withFont(PDType1Font.HELVETICA_OBLIQUE)
                 .withSize(8)
                 .build();
         PdfFont tableHeaderFont = new PdfFontBuilder()
-                .withFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD))
+                .withFont(PDType1Font.HELVETICA_BOLD)
                 .withSize(14)
                 .withColor(PdfColorBuilder.createPdfColor(Color.BLUE))
                 .build();
@@ -250,7 +249,7 @@ public class PdfCreatorTest {
                 .withPosition(new PdfTableCellPosition(2, 1))
                 .withContent("Computer That Rock")
                 .withFont(new PdfFontBuilder()
-                        .withFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD))
+                        .withFont(PDType1Font.HELVETICA_BOLD)
                         .withColor(PdfColorBuilder.createPdfColor(47, 243, 12))
                         .build())
                 .withBackgroundColor(PdfColorBuilder.createPdfColor(Color.GRAY))

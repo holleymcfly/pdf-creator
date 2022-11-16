@@ -3,7 +3,6 @@ package io.github.holleymcfly.pdf.model.font;
 import io.github.holleymcfly.pdf.model.color.PdfColor;
 import io.github.holleymcfly.pdf.model.color.PdfColorBuilder;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 
 import java.awt.*;
 import java.util.Objects;
@@ -32,12 +31,7 @@ public class PdfFontBuilder {
 
     public PdfFont build() {
         PdfFont pdfFont = new PdfFont();
-        if (font != null) {
-            pdfFont.setFont(font);
-        }
-        else {
-            pdfFont.setFont(new PDType1Font(Standard14Fonts.FontName.TIMES_ROMAN));
-        }
+        pdfFont.setFont(Objects.requireNonNullElse(font, PDType1Font.TIMES_ROMAN));
 
         if (size != -1) {
             pdfFont.setSize(size);
