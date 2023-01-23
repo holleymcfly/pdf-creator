@@ -60,8 +60,8 @@ public class PdfCreatorTest {
                 .withFooter(date, footerFont)
                 .withPageMarginLeft(60)
                 .withPageMarginRight(40)
-                .withPageMarginBottom(150)
-                .withPageMarginTop(80)
+                .withPageMarginBottom(20)
+                .withPageMarginTop(20)
                 .withPageFormat(PDRectangle.A4)
                 .build();
 

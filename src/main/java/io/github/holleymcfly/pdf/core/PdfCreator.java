@@ -141,7 +141,7 @@ public class PdfCreator {
             float rowHeight = table.getRowHeight(i+1);
             float rowWidth = tableStartX + table.getTableWidth();
 
-            if (!fitsTableOnPage(rowHeight)) {
+            if (doesntFitOnPage(rowHeight)) {
                 newPage();
             }
 
@@ -153,8 +153,8 @@ public class PdfCreator {
         }
     }
 
-    private boolean fitsTableOnPage(float height) {
-        return (currentY - height) > pageMarginBottom;
+    private boolean doesntFitOnPage(float height) {
+        return (currentY - height) < pageMarginBottom;
     }
 
     private void fillTableCellBackgrounds(PdfTable table, List<PdfTableCell> cells) {
@@ -391,6 +391,10 @@ public class PdfCreator {
 
         try {
             PDImageXObject pdImage = PDImageXObject.createFromFile(fullQualifiedFilename, document);
+            if (doesntFitOnPage(pdImage.getHeight())) {
+                newPage();
+            }
+
             PDPageContentStream contentStream = newContentStream();
             currentY -= pdImage.getHeight();
             contentStream.drawImage(pdImage, getPageMarginLeft(), currentY);
@@ -399,7 +403,24 @@ public class PdfCreator {
         catch (IOException e) {
             throw createRuntimeException(e, "Failed to load image from " + fullQualifiedFilename + ".");
         }
+    }
 
+    public void addImage(String fullQualifiedFilename, long width, long height) {
+
+        try {
+            PDImageXObject pdImage = PDImageXObject.createFromFile(fullQualifiedFilename, document);
+            if (doesntFitOnPage(height)) {
+                newPage();
+            }
+
+            PDPageContentStream contentStream = newContentStream();
+            currentY -= height;
+            contentStream.drawImage(pdImage, getPageMarginLeft(), currentY, width, height);
+            contentStream.close();
+        }
+        catch (IOException e) {
+            throw createRuntimeException(e, "Failed to load image from " + fullQualifiedFilename + ".");
+        }
     }
 
     private PDPageContentStream newContentStream() {
