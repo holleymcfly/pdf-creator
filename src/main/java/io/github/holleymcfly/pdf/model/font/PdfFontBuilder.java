@@ -2,19 +2,19 @@ package io.github.holleymcfly.pdf.model.font;
 
 import io.github.holleymcfly.pdf.model.color.PdfColor;
 import io.github.holleymcfly.pdf.model.color.PdfColorBuilder;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 
 import java.awt.*;
 import java.util.Objects;
 
 public class PdfFontBuilder {
 
-    private PDType1Font font;
+    private Standard14Fonts.FontName font;
     private int size = -1;
 
     private PdfColor color;
 
-    public PdfFontBuilder withFont(PDType1Font font) {
+    public PdfFontBuilder withFont(Standard14Fonts.FontName font) {
         this.font = font;
         return this;
     }
@@ -31,7 +31,7 @@ public class PdfFontBuilder {
 
     public PdfFont build() {
         PdfFont pdfFont = new PdfFont();
-        pdfFont.setFont(Objects.requireNonNullElse(font, PDType1Font.TIMES_ROMAN));
+        pdfFont.setFont(Objects.requireNonNullElse(font, Standard14Fonts.FontName.TIMES_ROMAN));
 
         if (size != -1) {
             pdfFont.setSize(size);

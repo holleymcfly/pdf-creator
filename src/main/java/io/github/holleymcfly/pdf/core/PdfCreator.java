@@ -11,6 +11,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -384,6 +385,21 @@ public class PdfCreator {
         }
 
         currentY = y;
+    }
+
+    public void addImage(String fullQualifiedFilename) {
+
+        try {
+            PDImageXObject pdImage = PDImageXObject.createFromFile(fullQualifiedFilename, document);
+            PDPageContentStream contentStream = newContentStream();
+            currentY -= pdImage.getHeight();
+            contentStream.drawImage(pdImage, getPageMarginLeft(), currentY);
+            contentStream.close();
+        }
+        catch (IOException e) {
+            throw createRuntimeException(e, "Failed to load image from " + fullQualifiedFilename + ".");
+        }
+
     }
 
     private PDPageContentStream newContentStream() {

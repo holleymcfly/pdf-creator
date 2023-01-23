@@ -2,15 +2,16 @@ package io.github.holleymcfly.pdf.model.font;
 
 import io.github.holleymcfly.pdf.model.color.PdfColor;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 
 public class PdfFont {
 
-    private PDType1Font font;
+    private Standard14Fonts.FontName font;
     private int size;
 
     private PdfColor color;
 
-    void setFont(PDType1Font font) {
+    void setFont(Standard14Fonts.FontName font) {
         this.font = font;
     }
 
@@ -23,7 +24,7 @@ public class PdfFont {
     }
 
     public PDType1Font getFont() {
-        return font;
+        return new PDType1Font(font);
     }
 
     public int getSize() {
