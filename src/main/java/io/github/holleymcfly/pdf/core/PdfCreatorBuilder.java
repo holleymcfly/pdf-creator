@@ -55,12 +55,12 @@ public class PdfCreatorBuilder {
     public PdfCreator build() {
 
         PdfCreator pdfCreator = new PdfCreator();
-        if (this.headerText != null && this.headerText.length() > 0) {
+        if (this.headerText != null && !this.headerText.isEmpty()) {
             pdfCreator.setHeaderText(this.headerText);
             pdfCreator.setHeaderFont(this.headerFont);
         }
 
-        if (this.footerText != null && this.footerText.length() > 0) {
+        if (this.footerText != null && !this.footerText.isEmpty()) {
             pdfCreator.setFooterText(this.footerText);
             pdfCreator.setFooterFont(this.footerFont);
 

@@ -2,8 +2,8 @@ package io.github.holleymcfly.pdf.model;
 
 public class PdfPoint {
 
-    private float x;
-    private float y;
+    private final float x;
+    private final float y;
 
     public PdfPoint(float x, float y) {
         this.x = x;

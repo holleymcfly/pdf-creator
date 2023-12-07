@@ -65,7 +65,7 @@ public class PdfCreator {
         addHeaderToPage();
         addFooterToPage();
 
-        if (this.headerText != null && this.headerText.length() > 0) {
+        if (this.headerText != null && !this.headerText.isEmpty()) {
             currentY = pageTop - headerFont.getSize() - 30; // Some space between the line and the following text.
         }
         else {
@@ -75,7 +75,7 @@ public class PdfCreator {
 
     private void addHeaderToPage() {
 
-        if (headerText != null && headerText.length() > 0) {
+        if (headerText != null && !headerText.isEmpty()) {
             addText(headerText, headerFont, getPageMarginLeft(), false, pageTop + pageMarginTop);
 
             float y = pageTop + pageMarginTop - headerFont.getSize() - 10; // magic 10: some space between text and line
@@ -86,7 +86,7 @@ public class PdfCreator {
 
     private void addFooterToPage() {
 
-        if (footerText != null && footerText.length() > 0) {
+        if (footerText != null && !footerText.isEmpty()) {
             addText(footerText, footerFont, getPageMarginLeft(), true, 35);
 
             float x = pageWidth - getPageMarginRight();
@@ -134,7 +134,7 @@ public class PdfCreator {
         for (int i=0; i<table.getNumberOfRows(); i++) {
 
             List<PdfTableCell> cells = table.getCellsForRowOrdered(i+1);
-            if (cells.size() == 0) {
+            if (cells.isEmpty()) {
                 continue;
             }
 
