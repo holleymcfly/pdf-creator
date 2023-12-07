@@ -13,7 +13,7 @@ For a detailed manual, see this [wiki page](https://github.com/holleymcfly/pdf-c
 <dependency>
     <groupId>io.github.holleymcfly</groupId>
     <artifactId>pdf-creator</artifactId>
-    <version>1.1.1</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 Please check the latest version [here](https://mvnrepository.com/artifact/io.github.holleymcfly/pdf-creator).
